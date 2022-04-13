@@ -1,0 +1,89 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{cancel}
+\nocite{*}
+
+
+\bibliographystyle{plain}
+
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}[definition]{Theorem}
+
+\title{A particular case of Stone duality: $(\diamondsuit,\mathbf{X},I)$-\emph{algebras}}
+\author{Anatole Leterrier}
+\date{2022–03–31}
+\begin{document}
+\maketitle
+The proof of theorem 3.5 in \cite{GhivG17} uses the J\'onsson-Tarski representation theorem for a particular kind of ``S4-algebras''.
+However, the duality can be understood using only the extended Stone duality explained in \cite{GehvG22}. Indeed, $(\diamondsuit,\mathbf{X},I)$-\emph{algebras}
+are Boolean algebras equipped with additional items, along with several axioms that the structure satisfies.
+Then, we can extend the extended Stone duality for Boolean algebras to $(\diamondsuit,\mathbf{X},I)$-\emph{algebras},
+by highlighting to which subclass of Boolean spaces they correspond.
+
+\begin{definition}\label{diamXIalgebra}
+As defined in \cite{GhivG17}, a $(\diamondsuit,\mathbf{X},I)$-\emph{algebra} is a Boolean algebra $(A,\lor,\neg,\bot)$ equipped with a join-preserving, unary modal operator $\diamondsuit$,
+a Boolean endomorphism $\mathbf{X}$, and an element $I$ of $A$ distinct from $\bot$.
+In addition, for any $a \in A$, the following axioms are true:
+\begin{enumerate}[label=(\roman*)]
+    \item $a \lor \mathbf{X}\diamondsuit a \leq \diamondsuit a$
+    \item if $\mathbf{X}\diamondsuit a \leq a$ then $\diamondsuit a \leq a$
+    \item if $a \ne \bot$ then $I \leq a$
+    \item $\mathbf{X}I = \bot$
+\end{enumerate}
+Note that our first item is fact is an equality for every $a$:
+$\mathbf{X}(\mathbf{X}\diamondsuit a \lor a) = \mathbf{X}a \lor \mathbf{X}\mathbf{X}\diamondsuit a \leq \mathbf{X}\diamondsuit a \lor \mathbf{X}\diamondsuit a$, by monotonicity of $\mathbf{X}$ and by $(i)$.
+This is itself below $\mathbf{X}\diamondsuit a \lor a$. Now by $(ii)$ it holds that $\diamondsuit a \leq \diamondsuit (\mathbf{X}\diamondsuit a \lor a)\leq \mathbf{X}\diamondsuit a \lor a$, which means we have exactly an equality in $(i)$.
+\end{definition}
+
+Now, given a $(\diamondsuit,\mathbf{X},I)$-\emph{algebra}, we have an underlying Boolean algebra, with dual $Y$ (its set of ultrafilters).
+The Boolean endomorphism $\mathbf{X}$ is transposed to a continuous function $f\colon Y \to Y$, while $\diamondsuit$ is only a join-preserving
+unary operator, so it corresponds to a compatible relation $R \subseteq Y\times Y$. 
+
+Finally, we can prove from our axioms that I is an atom.
+For any $a \in A$ such that $\bot < a\leq I$, by $(iii)$ we have $I\leq \diamondsuit a$.
+On the other side, by $(iv)$, $\mathbf{X}I =\bot \leq I$, so $(ii)$ implies $\diamondsuit I \leq I$.
+Finally $\diamondsuit I \leq \diamondsuit a$, and monotonicity of $\diamondsuit$ makes us conclude that $I=a$.
+As a consequence, $\uparrow I$ is an ultrafilter $x_0$ in $Y$.\\
+It remains to deduce what properties the so-called $(\diamondsuit,\mathbf{X},I)$-\emph{space} dual to A must have.
+
+\begin{theorem}\label{duality}
+    Let $Y$ be the space dual to $A$, equipped with $f$, $R$, and $x_0$ as defined above. Then the following hold:
+    \begin{itemize}
+        \item $x_0$ is a predecessor for every $x$, \emph{ie.} $R[x_0] = Y$;
+        \item $x_0$ has no predecessor, \emph{ie.} $f^{-1}(x_0) =  \emptyset$;
+        \item $R$ is a preorder, \emph{ie.} it is reflexive and transitive;
+        \item for every clopen $K \subseteq Y$, we have $f^{-1}(K)\subseteq K \implies R^{-1}[K]\subseteq K$;
+        \item $f(x)$ is the ``least successor of'' $x$ for every $x$ in $Y$, meaning $x R f(x)$ and $\forall y \neq x$, $x R y \implies f(x) R y$.
+    \end{itemize}
+    Conversely, if all of the above hold in the space $Y$, then the original Boolean algebra verifies all the axioms in definition \ref{diamXIalgebra}.
+\end{theorem}
+\begin{proof}
+    First, let us show the first part of this theorem. We suppose that axioms from $(i)$ from $(iv)$ hold.
+\begin{itemize}
+    \item $(iii)$ is equivalent to saying $x_0 \in R^{-1}[K]$ for every non-empty clopen $K$ of $Y$. This is exactly saying that $R[x_0] = Y$: the left-to-right implication comes from the fact that $\{ x\}$ is a clopen for every $x \in Y$; for right-to-left, note that any clopen $K \neq \emptyset$ is included in $Y = R[x_0]$, so that we can pick any $k \in K$ and get $x_0 R k$.
+    \item quite obviously, $(iv)$ expresses that $f^{-1}(x_0) =  \emptyset$.
+\end{itemize}
+Now, we can observe that $(i)$ is equivalent to three points, say $(i1):a \lor \mathbf{X}\diamondsuit a \geq \diamondsuit a$, $(i2): a \leq \diamondsuit a$, $(i3): \mathbf{X}\diamondsuit a \leq \diamondsuit a$.
+\begin{itemize}
+    \item $(i2)$ expresses exactly the fact that relation $R$ is reflexive.
+    \item Transitivity comes from the fact that $(i3)$ holds, which we can apply to $(ii)$ to get that $\diamondsuit \diamondsuit a \leq \diamondsuit a$. This is equivalent to transitivity in space $Y$.
+    \item $(i3)$ can be rephrased in terms of space by saying $f^{-1}(R^{-1}[K])\subseteq R^{-1}[K]$ for every clopen $K$. This implies $xRf(x)$ for every $x$. By contraposition, if some $x$ belonged to $f^{-1}R^{-1}[K]$ but not to $R^{-1}[K]$, we would get a $k$ in $K$ with $f(x) R k$, while for all $y \in K$,$x \cancel{R} y$. Having $x R f(x)$ would entail an immediate contradiction, by transitivity.
+    \item $(i1)$, in terms of space, means that for any clopen $K$, $R^{-1}[K] \subseteq K \cup f^{-1}(R^{-1}[K])$. In particular, since every $\{ y \}$ is clopen in $Y$, if we have $xRy$ for some $y \neq x$, then $f(x)Ry$.
+    \item Finally, $(ii)$ translates to : $f^{-1}(K)\subseteq K \implies R^{-1}[K]\subseteq K$ for every clopen $K \subseteq Y$.
+\end{itemize}
+To prove the reciprocal implication, if we suppose that all of the properties hold on $Y$, we already have $(ii)$, $(i2)$, $(iii)$ and $(iv)$, as we had reasoned with equivalences. It remains to show only the following points:
+\begin{itemize}
+    \item If $x R f(x)$ for every $x$, then if $x \in f^{-1}R^{-1}[K]$, $K$ clopen, \emph{ie.} $f(x) R y$ for some $y$ in $K$, it holds by transitivity that $x R y$ \emph{ie.} $x \in R^{-1}[K]$. This fact proves $(i3)$.
+    \item Let $xRk$ for some $k$ in clopen $K$. If $x=k$ then obviously $x\in K$. If not, then by supposition $f(x)Rk$ \emph{ie.} $x\in f^{-1}(R^{-1}[K])$. We conclude that $(i1)$ holds.
+\end{itemize}
+This ends the proof of theorem \ref{duality}.
+\end{proof}
+
+\bibliography{bibli}
+\end{document}
