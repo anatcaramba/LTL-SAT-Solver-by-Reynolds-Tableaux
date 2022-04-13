@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\nocite{*}
+
+\bibliographystyle{plain}
+\title{Monadic Second Order Logic as the Model Companion of Temporal Logic; a clearer version}
+\author{Anatole Leterrier}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+
+\begin{document}
+\maketitle
+
+This is nothing more than another version of the 2016 paper by Ghilardi and van Gool. Since the proofs in \cite{GhivG16} are mostly developed in the appendix, rewriting them completely in a more readable way is a quite useful exercise. Doing so, my goal is to understand deeply how the constructions work, in order to produce my own version for finite trees with counters by the end of my internship. If I explicit some point more than it was in the original paper, or if I change the order of a few definitions, it is because my understanding benefits from it. Conversely, if I move quickly on a topic, it is because it is already clear in my head.
+\section{Syntax and Semantics of fair CTL}\label{sec:synt_sem}
+Fair CTL, which is an extension of the well-known computational tree logic, is defined intuitively so it can simulate the termination condition for executions of tree automata. For example, the definition of $EG$ is close to what we expect for a fair execution, ie. a branch on which a formula is true infinitely often (or a final state visited infinitely often). 
+
+We will define a \emph{syntax} for the logic $CTL^{f}$, which will allow to interpret formulas as elements of a particular type of Boolean algebra, and to use results on duality for those algebras. 
+
+On the other hand, we will define \emph{semantics}, which will allow to interpret such formulas on models, ie. trees whose nodes are labeled by sets of propositional variables supposed to hold on each node. Next section will then be dedicated to prove that these semantics are \emph{complete} with respect to the syntax, in other words, that every formula that holds in every model can be proved to be equal to the $\top$ formula of the logic.
+\subsection*{Syntax of fair CTL}\label{subsec:syntax_CTLf}
+\begin{definition}\label{CTLf_formulas}
+Let $\bar{p}= \{p_1,...,p_n \}$ be a finite set of propositional variables. We define inductively a \emph{$CTL^{f}$-formula} $\varphi$ to be of the shape:
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item[-] $\bot$
+    \item[-] $p \in \bar{p}$
+    \item[-] $\neg \varphi$
+    \item[-] $\varphi \vee \psi$
+    \item[-] $\diamond \varphi$
+    \item[-] $EU(\varphi,\psi)$
+    \item[-] $EG(\varphi,\psi)$ 
+\end{itemize}
+For convenience, we then also define the De Morgan duals of our binary operations, respectively $\wedge$ for $\vee$; $AR$ for $EU$; $AF$ for $EG$. For the unary operator, we set $\Box \varphi = \neg \diamond(\neg \varphi)$; Finally, we set $\top$ to be the negation of $\bot$, naturally.\end{definition}
+
+\begin{definition}\label{quasi_eq_CTLf}
+We define the \emph{quasi-equational theory $CTL^{f}$} by requiring the formulas to satisfy the following axioms:
+\begin{enumerate}
+    \setlength\itemsep{0em}
+    \item Boolean algebra axioms for $\vee,\neg,\bot$;
+    \item Unary operator $\diamond$ preserves finite joins, including the empty joint $\bot$, making $CTL^f$ into a modal logic;
+    \item $\diamond \top = \top$
+    \item Binary operators $EU$ and $EG$ satisfy the following \emph{fixpoint axioms} for all $a,b,c$:
+    \begin{itemize}
+        \item[-] $a \vee (b \wedge \diamond EU(a,b)) \leq EU(a,b)$
+        \item[-] $a \vee (b \wedge \diamond c) \leq c \implies EU(a,b) \leq c$ 
+        \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge EG(a,b),a)$
+        \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge c,a) \implies c \leq EG(a,b)$
+    \end{itemize}
+    In other words, $EU(a,b)$ is the \emph{least pre-fixpoint} of the function $x \mapsto a \vee (b \wedge \diamond x)$.
+    And $EG(a,b)$ is the \emph{greatest post-fixpoint} of the function $x \mapsto a\wedge \diamond EU(b\wedge x,a)$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}\label{CTLf-algebra}
+    Given what is said just above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\mathbb{A}=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
+\end{definition}
+Importantly, we remark that for all $a,b$, $AR(a,b)$ is the greatest post-fixpoint of $x \mapsto a \wedge (b \vee \Box x)$, while $AF(a,b)$ is the least pre-fixpoint of $x \mapsto a \vee \Box AR(b\vee c,a)$.
+\begin{definition}\label{interp_form_algebra}
+    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\mathbb{A}$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$).
+
+    Then, we can say the equality $\varphi(\bar{p})=\psi(\bar{p})$ is \emph{valid} if it interprets to $\top$ under every valuation to every $\mathbb{A}$.
+
+    $\varphi$ and $\psi $ are said to be \emph{equivalent} if the equation $\varphi = \psi$ is valid. $\varphi$ is called a \emph{tautology} if it is equivalent to $\top$, and is said to be \emph{consistent} if it is not equivalent to $\bot$.
+
+    Finally, we say $\varphi$ \emph{entails} $\psi$ if $\neg \varphi \vee \psi$ is a tautology, which we will note $\varphi \vdash \psi$ or $\varphi \leq \psi$.
+\end{definition}
+
+\subsection*{Semantics of fair CTL}\label{subsec:sem_CTLf}
+\begin{definition}\label{forcing_rel_CTLf}
+    We first define the notion of \emph{transition system}, ie. a pair $(S,R)$, where $S$ is a set, and $R$ a binary relation on $S$. Then, a \emph{$R$-path} is a (possibly infinite) sequence of nodes in $S$ such that $s_i R s_{i+1}$ for all $i$. Finally, for a finite set $\bar{p}$ of variables, define a \emph{$\bar{p}$-coloring} $\sigma : S \to \mathcal{P}(\bar{p})$.
+
+    We can define the forcing relation $\models$ between nodes in $S$ and formulas $\varphi$ with variables in $\bar{p}$, by induction on $\varphi$:
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item[-] $s\not\models \bot$;
+        \item[-] $s \models p$ if $p \in \sigma(s)$;
+        \item[-] $s \models \neg\varphi$ if not $s \models \varphi$;
+        \item[-] $s \models \varphi \vee \psi$ if $s\models \varphi$ or if $s\models \psi$;
+        \item[-] $s\models \diamond\varphi$ if there exists $s'$ such that $sRs'$ and $s'\models \varphi$;
+        \item[-] $s\models EU(\varphi,\psi)$ if there exists $n\geq 0$ and a path $s_0Rs_1R...Rs_n$ ($s_0=s$) such that $s_k\models\psi$ for every $k<n$ and $s_n\models\varphi$;
+        \item[-] $s\models EG(\varphi,\psi)$ if there exists an infinite path $s_0Rs_1R...$ ($s_0=s$) such that $s_k\models\varphi$ for every $k$ and $s_j\models\psi$ infinitely often on the path.       
+    \end{itemize}
+
+\end{definition}
+
+Remark that as a consequence, $s\models\Box\varphi$ if and only if for every successor $s'$ of $s$ by $R$, $s'\models\varphi$ holds.
+Also, $s\models AR(\varphi,\psi)$ if and only if for every $n\geq 0$ and every path $s=s_0Rs_1R...Rs_n$, either $s_k\models\psi$ for some $k<n$, or $s_n\models\varphi$.
+
+Similarly, $s\models AF(\varphi,\psi)$ if and only if for all infinite paths $(s)_k$ starting from $s_0$, if $s_j\not\models\psi$ infinitely often, then $s_k\models\varphi$ for some $k$.
+
+Also, as a convention, we will consider the transition systems to be \emph{serial}, ie. that every node has a successor. Syntactically, this is represented by the axiom $\diamond\top = \top$.
+\section{Completeness proof}\label{sec:compl}    
+
+\begin{definition}
+    
+\end{definition}
+
+
+\bibliography{bibli}
+\end{document}
