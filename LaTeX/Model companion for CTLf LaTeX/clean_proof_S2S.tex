@@ -24,51 +24,58 @@
 
 This is nothing more than another version of the 2016 paper by Ghilardi and van Gool. Since the proofs in \cite{GhivG16} are mostly developed in the appendix, rewriting them completely in a more readable way is a quite useful exercise. Doing so, my goal is to understand deeply how the constructions work, in order to produce my own version for finite trees with counters by the end of my internship. If I explicit some point more than it was in the original paper, or if I change the order of a few definitions, it is because my understanding benefits from it. Conversely, if I move quickly on a topic, it is because it is already clear in my head.
 \section{Syntax and Semantics of fair CTL}\label{sec:synt_sem}
+
 Fair CTL, which is an extension of the well-known computational tree logic, is defined intuitively so it can simulate the termination condition for executions of tree automata. For example, the definition of $EG$ is close to what we expect for a fair execution, ie. a branch on which a formula is true infinitely often (or a final state visited infinitely often). 
 
 We will define a \emph{syntax} for the logic $CTL^{f}$, which will allow to interpret formulas as elements of a particular type of Boolean algebra, and to use results on duality for those algebras. 
 
-On the other hand, we will define \emph{semantics}, which will allow to interpret such formulas on models, ie. trees whose nodes are labeled by sets of propositional variables supposed to hold on each node. Next section will then be dedicated to prove that these semantics are \emph{complete} with respect to the syntax, in other words, that every formula that holds in every model can be proved to be equal to the $\top$ formula of the logic.
+On the other hand, we will define \emph{semantics}, which will allow to interpret such formulas on models, ie. trees whose nodes are labeled by sets of propositional variables supposed to hold on each node. Next section will then be dedicated to prove that these semantics are \emph{complete} with respect to the syntax, in other words, that for every formula $\varphi$ that holds in every model, we can syntactically deduce that $\varphi$ is equivalent to the $\top$ formula of the logic.
+
 \subsection*{Syntax of fair CTL}\label{subsec:syntax_CTLf}
+
 \begin{definition}\label{CTLf_formulas}
-Let $\bar{p}= \{p_1,...,p_n \}$ be a finite set of propositional variables. We define inductively a \emph{$CTL^{f}$-formula} $\varphi$ to be of the shape:
-\begin{itemize}
-    \setlength\itemsep{0em}
-    \item[-] $\bot$
-    \item[-] $p \in \bar{p}$
-    \item[-] $\neg \varphi$
-    \item[-] $\varphi \vee \psi$
-    \item[-] $\diamond \varphi$
-    \item[-] $EU(\varphi,\psi)$
-    \item[-] $EG(\varphi,\psi)$ 
-\end{itemize}
-For convenience, we then also define the De Morgan duals of our binary operations, respectively $\wedge$ for $\vee$; $AR$ for $EU$; $AF$ for $EG$. For the unary operator, we set $\Box \varphi = \neg \diamond(\neg \varphi)$; Finally, we set $\top$ to be the negation of $\bot$, naturally.\end{definition}
+    Let $\bar{p}= \{p_1,...,p_n \}$ be a finite set of propositional variables. We define inductively a \emph{$CTL^{f}$-formula} $\varphi$ to be of the shape:
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item[-] $\bot$
+        \item[-] $p \in \bar{p}$
+        \item[-] $\neg \varphi$
+        \item[-] $\varphi \vee \psi$
+        \item[-] $\diamond \varphi$
+        \item[-] $EU(\varphi,\psi)$
+        \item[-] $EG(\varphi,\psi)$ 
+    \end{itemize}
+    For convenience, we then also define the De Morgan duals of our binary operations, respectively $\wedge$ for $\vee$; $AR$ for $EU$; $AF$ for $EG$. For the unary operator, we set $\Box \varphi = \neg \diamond(\neg \varphi)$; Finally, we set $\top$ to be the negation of $\bot$, naturally.
+\end{definition}
 
 \begin{definition}\label{quasi_eq_CTLf}
-We define the \emph{quasi-equational theory $CTL^{f}$} by requiring the formulas to satisfy the following axioms:
-\begin{enumerate}
-    \setlength\itemsep{0em}
-    \item Boolean algebra axioms for $\vee,\neg,\bot$;
-    \item Unary operator $\diamond$ preserves finite joins, including the empty joint $\bot$, making $CTL^f$ into a modal logic;
-    \item $\diamond \top = \top$
-    \item Binary operators $EU$ and $EG$ satisfy the following \emph{fixpoint axioms} for all $a,b,c$:
-    \begin{itemize}
-        \item[-] $a \vee (b \wedge \diamond EU(a,b)) \leq EU(a,b)$
-        \item[-] $a \vee (b \wedge \diamond c) \leq c \implies EU(a,b) \leq c$ 
-        \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge EG(a,b),a)$
-        \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge c,a) \implies c \leq EG(a,b)$
-    \end{itemize}
-    In other words, $EU(a,b)$ is the \emph{least pre-fixpoint} of the function $x \mapsto a \vee (b \wedge \diamond x)$.
-    And $EG(a,b)$ is the \emph{greatest post-fixpoint} of the function $x \mapsto a\wedge \diamond EU(b\wedge x,a)$.
-\end{enumerate}
+    We define the \emph{quasi-equational theory $CTL^{f}$} by requiring the formulas to satisfy the following axioms:
+    \begin{enumerate}
+        \setlength\itemsep{0em}
+        \item Boolean algebra axioms for $\vee,\neg,\bot$;
+        \item Unary operator $\diamond$ preserves finite joins, including the empty joint $\bot$, making $CTL^f$ into a modal logic;
+        \item $\diamond \top = \top$
+        \item Binary operators $EU$ and $EG$ satisfy the following \emph{fixpoint axioms} for all $a,b,c$:
+        \begin{itemize}
+            \item[-] $a \vee (b \wedge \diamond EU(a,b)) \leq EU(a,b)$
+            \item[-] $a \vee (b \wedge \diamond c) \leq c \implies EU(a,b) \leq c$ 
+            \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge EG(a,b),a)$
+            \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge c,a) \implies c \leq EG(a,b)$
+        \end{itemize}
+        In other words, $EU(a,b)$ is the \emph{least pre-fixpoint} of the function $x \mapsto a \vee (b \wedge \diamond x)$.
+        And $EG(a,b)$ is the \emph{greatest post-fixpoint} of the function $x \mapsto a\wedge \diamond EU(b\wedge x,a)$.
+    \end{enumerate}
 \end{definition}
 
 \begin{definition}\label{CTLf-algebra}
     Given what is said just above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\mathbb{A}=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
 \end{definition}
+
 Importantly, we remark that for all $a,b$, $AR(a,b)$ is the greatest post-fixpoint of $x \mapsto a \wedge (b \vee \Box x)$, while $AF(a,b)$ is the least pre-fixpoint of $x \mapsto a \vee \Box AR(b\vee c,a)$.
+
+Also, the way EU and EG formulas are defined reminds the fixpoint operators of the \emph{$\mu$-calculus}. For example, for every $a,b$, $EU(a,b)$ could have been defined as $\mu x.(a \vee (b \wedge \diamond x))$, the least fixpoint of this monotone function (it is enough to say the least \emph{pre-fixpoint}). As for EG, it is a greatest \emph{(post-)} fixpoint, so it could have been defined with a $\nu$ operator, where $\nu f = \neg\mu(\neg f) $. We can see that such a definition of EG makes apparent a nesting of a $\nu$ and a $\mu$ operator. This is what makes the logic hard to simplify, compared to LTL which only contains one such fixpoint operator.  
 \begin{definition}\label{interp_form_algebra}
-    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\mathbb{A}$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$).
+    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\mathbb{A}$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^A(V)$).
 
     Then, we can say the equality $\varphi(\bar{p})=\psi(\bar{p})$ is \emph{valid} if it interprets to $\top$ under every valuation to every $\mathbb{A}$.
 
@@ -101,6 +108,48 @@ Also, $s\models AR(\varphi,\psi)$ if and only if for every $n\geq 0$ and every p
 Similarly, $s\models AF(\varphi,\psi)$ if and only if for all infinite paths $(s)_k$ starting from $s_0$, if $s_j\not\models\psi$ infinitely often, then $s_k\models\varphi$ for some $k$.
 
 Also, as a convention, we will consider the transition systems to be \emph{serial}, ie. that every node has a successor. Syntactically, this is represented by the axiom $\diamond\top = \top$.
+
+Now, in order to prove completeness, we introduce the notion of \emph{complex algebra} of a transition system. This can be seen as a canonical algebra for the semantics of our logic. Then, we will be able to say that a formula holds semantically if, and only if, it can be derived in the complex algebra.
+
+\begin{definition}\label{complex_algebra}
+    Given a transition system $(S,R)$, its \emph{complex algebra} is the tuple $$\mathbb{P}_{(S,R)}=(\mathcal{P}(S),\emptyset,S\backslash(-),\cup,\diamond_R,EU_R,EG_R)$$ which is the classical Boolean algebra over the powerset of $S$, along with operators $$\diamond_R(a)=R^{-1}[a]=\{s\in S \mid \exists t\in a, sRt \}$$ and $EU_R$ and $EG_R$ defined as fixpoints (see above) so that we finally have a $CTL^f$-algebra. 
+\end{definition}
+
+\begin{lemma}\label{EU_as_union}
+        For every $a,b$ in the complex algebra of $(S,R)$ it holds that $$EU(a,b)=\bigcup_{i=1}^{\infty}D_n(a,b)$$ where $D_n$ is defined inductively as
+        \begin{equation*}
+            \begin{cases}
+                D_0(a,b)=\emptyset\\
+                D_{n+1}(a,b)=a\cup(b\cap\diamond_R D_n(a,b))
+            \end{cases}
+        \end{equation*}
+        
+\end{lemma}
+
+\begin{proof}
+    \begin{itemize}
+        \item[$\supseteq$] By induction on n we show $D_n(a,b) \subseteq EU(a,b)$.\\ For $n=0$ this is obvious. For the induction step, let $s\in D_{n+1}(a,b)$. By the pre-fixpoint definition of $EU$ we have $a\leq EU(a,b)$ and $(b\cap\diamond EU(a,b))\leq EU(a,b)$. It follows that if $s$ is in $a$, it is directly in $EU(a,b)$; and in the other case, there exists $s'$ in $D_n(a,b)$ such that $sRs'$ By hypothesis $s'\in EU(a,b)$. We have exactly $s\in b\cap\diamond EU(a,b)$, from which we conclude $s\in EU(a,b)$.
+        \item[$\subseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
+    \end{itemize}
+\end{proof}
+Note that $D_n(a,b)$ is the set $$\{s\in S\mid \exists s_1,...s_n, s=s0Rs_1R...Rs_n, s_k\in a \forall k<n \mbox{ and } s_n \in b\}$$.
+
+We can now state the corresponding lemma for $EG$:
+\begin{lemma}\label{EG_as_inters}
+    
+\end{lemma}
+
+\begin{proposition}\label{equiv_complex_alg}
+    Consider a transition system $(S,R)$ along with a a $\bar{p}$-coloring $\sigma : S \to \mathcal{P}(\bar{p})$. This coloring corresponds exactly to a valuation $V_\sigma:\bar{p}\to \mathcal{P}(S)$, as we in fact have a bijection between $\bar{p}$-colorings and such valuations.
+
+    Then, for every $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ and for every $s\in S$, we have: $$s\models\varphi \Longleftrightarrow s\in\varphi^{\mathbb{P}(S,R)}(V_\sigma(\bar{p}))$$
+\end{proposition}
+
+\begin{proof}
+    First, we show there is a bijection between $\bar{p}$-colorings $\sigma:S \to \mathcal{P}(\bar{p})$ and valuations $V:\bar{p}\to \mathcal{P}(S)$. Given $\sigma$, define $V_\sigma: p\mapsto\{s\in S \mid p\in \sigma(s)\}$. And conversely, given $V$, we can define $\sigma_V: v\mapsto\{p\in\bar{p}\mid v\in V(p)\}$.
+
+    Second, we show the equivalence, by induction on the structure of $\varphi$ Looking at the definitions, it should be obvious for all cases up to diamond; as for $EU$ and $EG$, the wanted equivalence is a consequence of lemmas \ref{EU_as_union} and \ref{EG_as_inters}.
+\end{proof}
 \section{Completeness proof}\label{sec:compl}    
 
 \begin{definition}
