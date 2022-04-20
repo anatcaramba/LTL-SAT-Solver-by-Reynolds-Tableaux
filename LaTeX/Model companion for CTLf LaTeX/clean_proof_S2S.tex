@@ -10,6 +10,9 @@
 \usepackage{amsfonts}
 \nocite{*}
 
+\newcommand{\A}{{\mathbb A}}
+\newcommand{\Evp}{{Ev(\bar{p})}}
+
 \bibliographystyle{plain}
 \title{Monadic Second Order Logic as the Model Companion of Temporal Logic; a clearer version}
 \author{Anatole Leterrier}
@@ -60,7 +63,7 @@ On the other hand, we will define \emph{semantics}, which will allow to interpre
             \item[-] $a \vee (b \wedge \diamond EU(a,b)) \leq EU(a,b)$
             \item[-] $a \vee (b \wedge \diamond c) \leq c \implies EU(a,b) \leq c$ 
             \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge EG(a,b),a)$
-            \item[-] $EG(a,b)\leq a\wedge \diamond EU(b\wedge c,a) \implies c \leq EG(a,b)$
+            \item[-] $c\leq a\wedge \diamond EU(b\wedge c,a) \implies c \leq EG(a,b)$
         \end{itemize}
         In other words, $EU(a,b)$ is the \emph{least pre-fixpoint} of the function $x \mapsto a \vee (b \wedge \diamond x)$.
         And $EG(a,b)$ is the \emph{greatest post-fixpoint} of the function $x \mapsto a\wedge \diamond EU(b\wedge x,a)$.
@@ -68,16 +71,16 @@ On the other hand, we will define \emph{semantics}, which will allow to interpre
 \end{definition}
 
 \begin{definition}\label{CTLf-algebra}
-    Given what is said just above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\mathbb{A}=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
+    Given what is said just above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\A=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
 \end{definition}
 
 Importantly, we remark that for all $a,b$, $AR(a,b)$ is the greatest post-fixpoint of $x \mapsto a \wedge (b \vee \Box x)$, while $AF(a,b)$ is the least pre-fixpoint of $x \mapsto a \vee \Box AR(b\vee c,a)$.
 
 Also, the way EU and EG formulas are defined reminds the fixpoint operators of the \emph{$\mu$-calculus}. For example, for every $a,b$, $EU(a,b)$ could have been defined as $\mu x.(a \vee (b \wedge \diamond x))$, the least fixpoint of this monotone function (it is enough to say the least \emph{pre-fixpoint}). As for EG, it is a greatest \emph{(post-)} fixpoint, so it could have been defined with a $\nu$ operator, where $\nu f = \neg\mu(\neg f) $. We can see that such a definition of EG makes apparent a nesting of a $\nu$ and a $\mu$ operator. This is what makes the logic hard to simplify, compared to LTL which only contains one such fixpoint operator.  
 \begin{definition}\label{interp_form_algebra}
-    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\mathbb{A}$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^A(V)$).
+    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\A$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^A(V)$).
 
-    Then, we can say the equality $\varphi(\bar{p})=\psi(\bar{p})$ is \emph{valid} if it interprets to $\top$ under every valuation to every $\mathbb{A}$.
+    Then, we can say the equality $\varphi(\bar{p})=\psi(\bar{p})$ is \emph{valid} if it interprets to $\top$ under every valuation to every $\A$.
 
     $\varphi$ and $\psi $ are said to be \emph{equivalent} if the equation $\varphi = \psi$ is valid. $\varphi$ is called a \emph{tautology} if it is equivalent to $\top$, and is said to be \emph{consistent} if it is not equivalent to $\bot$.
 
@@ -112,11 +115,11 @@ Also, as a convention, we will consider the transition systems to be \emph{seria
 Now, in order to prove completeness, we introduce the notion of \emph{complex algebra} of a transition system. This can be seen as a canonical algebra for the semantics of our logic. Then, we will be able to say that a formula holds semantically if, and only if, it can be derived in the complex algebra.
 
 \begin{definition}\label{complex_algebra}
-    Given a transition system $(S,R)$, its \emph{complex algebra} is the tuple $$\mathbb{P}_{(S,R)}=(\mathcal{P}(S),\emptyset,S\backslash(-),\cup,\diamond_R,EU_R,EG_R)$$ which is the classical Boolean algebra over the powerset of $S$, along with operators $$\diamond_R(a)=R^{-1}[a]=\{s\in S \mid \exists t\in a, sRt \}$$ and $EU_R$ and $EG_R$ defined as fixpoints (see above) so that we finally have a $CTL^f$-algebra. 
+    Given a transition system $(S,R)$, its \emph{complex algebra} is the tuple \[\mathbb{P}_{(S,R)}=(\mathcal{P}(S),\emptyset,S\backslash(-),\cup,\diamond_R,EU_R,EG_R)\] which is the classical Boolean algebra over the powerset of $S$, along with operators \[\diamond_R(a)=R^{-1}[a]=\{s\in S \mid \exists t\in a, sRt \}\] and $EU_R$ and $EG_R$ defined as fixpoints (see above) so that we finally have a $CTL^f$-algebra. 
 \end{definition}
 
 \begin{lemma}\label{EU_as_union}
-        For every $a,b$ in the complex algebra of $(S,R)$ it holds that $$EU(a,b)=\bigcup_{i=1}^{\infty}D_n(a,b)$$ where $D_n$ is defined inductively as
+        For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that \[EU_R(a,b)=\bigcup_{i=0}^{\infty}D_n(a,b)\] where $D_n$ is defined inductively as
         \begin{equation*}
             \begin{cases}
                 D_0(a,b)=\emptyset\\
@@ -128,21 +131,28 @@ Now, in order to prove completeness, we introduce the notion of \emph{complex al
 
 \begin{proof}
     \begin{itemize}
-        \item[$\supseteq$] By induction on n we show $D_n(a,b) \subseteq EU(a,b)$.\\ For $n=0$ this is obvious. For the induction step, let $s\in D_{n+1}(a,b)$. By the pre-fixpoint definition of $EU$ we have $a\leq EU(a,b)$ and $(b\cap\diamond EU(a,b))\leq EU(a,b)$. It follows that if $s$ is in $a$, it is directly in $EU(a,b)$; and in the other case, there exists $s'$ in $D_n(a,b)$ such that $sRs'$ By hypothesis $s'\in EU(a,b)$. We have exactly $s\in b\cap\diamond EU(a,b)$, from which we conclude $s\in EU(a,b)$.
+        \item[$\supseteq$] By induction on n we show $D_n(a,b) \subseteq EU_R(a,b)$.\\ For $n=0$ this is obvious. For the induction step, let $s\in D_{n+1}(a,b)$. By the pre-fixpoint definition of $EU$ we have $a\leq EU_R(a,b)$ and $(b\cap\diamond EU_R(a,b))\leq EU_R(a,b)$. It follows that if $s$ is in $a$, it is directly in $EU_R(a,b)$; and in the other case, there exists $s'$ in $D_n(a,b)$ such that $sRs'$ By hypothesis $s'\in EU_R(a,b)$. We have exactly $s\in b\cap\diamond EU_R(a,b)$, from which we conclude $s\in EU_R(a,b)$.
         \item[$\subseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
     \end{itemize}
 \end{proof}
-Note that $D_n(a,b)$ is the set $$\{s\in S\mid \exists s_1,...s_n, s=s0Rs_1R...Rs_n, s_k\in a \forall k<n \mbox{ and } s_n \in b\}$$.
-
+Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_n, s=s_0Rs_1R...Rs_n, s_k\in a \mbox{ for all } k<n \mbox{ and } s_n \in b\}\]
 We can now state the corresponding lemma for $EG$:
 \begin{lemma}\label{EG_as_inters}
-    
+    For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that \[EG_R(a,b)=\bigcap_{i=0}^{\infty}D'_n(a,b)\] where $D'_n$ is defined inductively as
+        \begin{equation*}
+            \begin{cases}
+                D'_0(a,b)=\mathcal{P}(S)\\
+                D'_{n+1}(a,b)=a\cap\diamond_REU_R(b\cap D'_n(a,b),a)
+            \end{cases}
+        \end{equation*}
 \end{lemma}
+
+Note that $D'_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_p, s=s_0Rs_1R...Rs_p,\forall k\leq p \mbox{ } s_k\in a \mbox{ and } s_k \in b \mbox{ for }n\mbox{ }s_k\}\]
 
 \begin{proposition}\label{equiv_complex_alg}
     Consider a transition system $(S,R)$ along with a a $\bar{p}$-coloring $\sigma : S \to \mathcal{P}(\bar{p})$. This coloring corresponds exactly to a valuation $V_\sigma:\bar{p}\to \mathcal{P}(S)$, as we in fact have a bijection between $\bar{p}$-colorings and such valuations.
 
-    Then, for every $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ and for every $s\in S$, we have: $$s\models\varphi \Longleftrightarrow s\in\varphi^{\mathbb{P}(S,R)}(V_\sigma(\bar{p}))$$
+    Then, for every $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ and for every $s\in S$, we have: \[s\models\varphi \Longleftrightarrow s\in\varphi^{\mathbb{P}_{(S,R)}}(V_\sigma(\bar{p}))\]
 \end{proposition}
 
 \begin{proof}
@@ -152,9 +162,212 @@ We can now state the corresponding lemma for $EG$:
 \end{proof}
 \section{Completeness proof}\label{sec:compl}    
 
-\begin{definition}
-    
+This section will be dedicated to showing completeness of the above axiomatization of $CTL^f$. Equivalently, we show that consistent formulas in an algebra (not equal to $\bot$) can be satisfied semantically.
+
+\begin{definition}\label{tree}
+    A \emph{tree} is a transition system $(S,R)$ with a \emph{root}, such that for every $s$ in $S$, there is a unique path from the root to $S$. This implies a partial order $\preceq$, the reflexive-transitive closure of $R$, which has the property that $v\preceq v'$ if and only if $v$ lies on the unique path from the root to $v'$.
 \end{definition}
+
+\begin{theorem}\label{completeness}
+    For every \emph{consistent} $CTL^f$-formula $\varphi_0(\bar{p})$, there exists a $\bar{p}$-colored tree with root $s_0$, such that $s_0 \models \varphi_0$.
+\end{theorem}
+
+The rest of this section consists of the proof of theorem \ref{completeness}. Let us fix a consistent formula $\varphi_0({\bar{p}})$. We then have a $CTL^f$-algebra $\A$ and a valuation $V:\bar{p}\to \A$ such that $\varphi_0^\A(V(\bar{p}))\neq\bot$. Now, since $\A$, $\bar{p}$ and $V$ are fixed in the rest of the section, we may leave them implicit and assimilate $\varphi_0$ to its interpretation.
+
+\subsection*{Preliminaries}
+
+We begin by proving a few facts about $EU$, $EG$, etc. that will be useful in the rest of the section.
+\begin{proposition}\label{basic_prop_EU}
+    For every $a,a',b,b',c$ in $\A$, the following hold:
+    \begin{enumerate}
+        \item $EU(a\vee a',b)=EU(a,b)\vee EU(a',b)$;
+        \item $AR(a\wedge a',b)=AR(a,b)\wedge AR(a',b)$;
+        \item $a\leq a'$ and $b\leq b'$ implies $EG(a,b)\leq EG(a',b')$;
+        \item $a\leq a'$ and $b\leq b'$ implies $AF(a,b)\leq AF(a',b')$
+        \item $AR(a,b)\wedge \neg b \leq \Box AR(a,b) $
+        \item if $a\wedge c\leq\Box c $ and $b\wedge c\leq\Box c$, then $EU(a,b)\wedge c\leq EU(a\wedge\Box c,b\wedge\Box c)$.
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    \begin{enumerate}
+        \item $EU$ is defined as the fixpoint of a monotone function, therefore it is itself monotone. So we have $EU(a,b)\leq EU(a\vee a',b)$ and $EU(a',b)\leq EU(a\vee a',b)$, which entails $EU(a,b)\vee EU(a',b)\leq EU(a\vee a',b)$.
+        For the other way, it suffices to prove that $EU(a,b)\vee EU(a',b)$ is a pre-fixpoint of the same function as $EU(a\vee a',b)$. We have, by monotonicity of $\diamond$ and by definition of $EU$, \[(a\vee a')\vee(b\wedge\diamond(EU(a,b)\vee EU(a',b)))\]\[=(a\vee(b\wedge\diamond(EU(a,b))))\vee (a'\vee(b\wedge\diamond(EU(a',b))))\]\[\leq EU(a,b)\vee EU(a',b)\]This proves our point.
+        \item this is clear from the fact that $AR$ is the De Morgan dual of $EU$.
+        \item clear from the definition of $EG$ as the fixpoint of a monotone function.
+        \item idem.
+        \item by definition of $AR$, we have $AR(a,b)\leq b\vee\Box(AR(a,b))$, which is equivalent to the statement we want to prove.
+        \item suppose that $a\wedge c \leq \Box c$ and $b\wedge c \leq \Box c$. Let us prove that $d:=EU(a\wedge\Box c,b\wedge\Box c)\vee\neg c$ is a pre-fixpoint of the same function as $EU(a,b)$, which will entail our point by minimality of $EU(a,b)$.
+        \begin{itemize}
+            \item $a\wedge c\leq a$, and by assumption $a\wedge c\leq\Box c$, so $a\wedge c\leq a\wedge\Box c\leq (a\wedge\Box c)\vee(b\wedge\Box c\wedge\diamond EU(a\wedge\Box c,b\wedge\Box c))\leq EU(a\wedge\Box c,b\wedge\Box c)$;
+            \item note that $b\wedge c\wedge \diamond d = (b\wedge c\wedge\diamond(\neg c))\vee((b\wedge c)\wedge\diamond EU(a\wedge\Box c,b\wedge\Box c))$; but $b\wedge c\wedge\diamond(\neg c)\leq b\wedge\Box c\wedge\diamond\neg c = \bot$. Then we have $b\wedge c\diamond d\leq (b\wedge\Box c)\wedge\diamond EU(a\wedge\Box c,b\wedge\Box c)\leq EU(a\wedge\Box c,b\wedge\Box c)$.
+            \item From the two above points we conclude that $a\vee(b\wedge\diamond d)\leq d$. 
+        \end{itemize}
+    \end{enumerate}
+\end{proof}
+
+\begin{definition}\label{contextual_op}
+    We define ternary \emph{contextual operations} $EU_c$ and $AF_c$:
+    \begin{itemize}
+        \item $EU_c(p,q,r)=p\vee(q\wedge\diamond EU(p\wedge r,q\wedge r))$,
+        \item $AF_c(p,q,r)=AF(p,q)\wedge(p\vee\Box AR(q\wedge r,p))$.
+    \end{itemize}
+\end{definition}
+
+\begin{proposition}\label{contextual_as_fixpoints}
+    For every $p,q,r$ in $\A$, we have:
+    \begin{enumerate}
+        \item $EU_c(p,q,r)$ is the least pre-fixpoint of the monotone fuction $x\mapsto p\vee(q\wedge \diamond(r\wedge x))$;
+        \item $AF_c(p,q,r)$ is the greatest post-fixpoint of the monotone function $x\mapsto p\vee\Box AR(q\vee(r\wedge x),p)$.
+    \end{enumerate}
+    
+\end{proposition}
+
+\begin{proof}
+    \begin{enumerate}
+        \item First, we have the equality \[EU_c(p,q,r)\wedge r = (p\wedge r)\vee(q\wedge r\wedge\diamond EU(p\wedge r,q\wedge r))\]\[=EU(p\wedge r,q\wedge r)\] by definition of $EU$. So $EU_c(p,q,r)$ is a fixpoint of the required function, as by definition: \[EU_c(p,q,r)=(\diamond(EU(p\wedge r,q\wedge r))\wedge q))\vee p\] Now, consider any fixpoint $s$ of this function. Then, $(p\wedge r)\vee(q\wedge r\wedge\diamond(r\wedge s))= r\wedge(p\vee(q\wedge\diamond(r\wedge s)))\leq r\wedge s$. By minimality, it entails that $EU(p\wedge r,q\wedge r)\leq r\wedge s$. Finally $EU_c(p,q,r)=p\vee(q\wedge\diamond EU(p\wedge r,q\wedge r))\leq p\vee(q\wedge\diamond(r\wedge s))\leq s$, which ends the proof.
+        \item Consider function $\sigma :x\mapsto p\vee\Box AR(q\vee(r\wedge x),p)$.
+        \begin{itemize}
+            \item $AF_c(p,q,r)$ is a pre-fixpoint of $\sigma$.
+            
+            Note, by definition, that $AF_c(p,q,r)\leq AF(p,q)$. So \[p\vee\Box AR(q\vee AF_c(p,q,r),p)\]\[\leq p\vee\Box AR(q\vee AF(p,q),p)=AF(p,q)\] by definition of $AF$. By \ref{basic_prop_EU}(2), we have\[\sigma(AF_c(p,q,r))=(p\vee\Box AR(q\vee r,p))\wedge(p\vee\Box AR(q\vee AF_c(p,q,r)),p)\]\[\leq(p\vee\Box AR(q\vee r,p))\wedge AF(p,q)\]\[\leq AF_c(p,q,r).\]
+            \item $AF_c(p,q,r)$ is the least such pre-fixpoint. Let $s\in A$ be such that $\sigma(s)\leq s$. Write $\alpha=AR(a\vee r,p)$. Then the following claim is true: \[AF(p\vee\diamond\neg \alpha, q\vee s)\wedge\Box\alpha\leq s\]
+            Indeed, by hypothesis $p\leq s$ and $\Box AR(q\vee(r\wedge s),p)\leq s$. From there, $\neg q\wedge \neg s\wedge \alpha \leq \neg p \wedge \alpha\leq\Box\alpha$ by \ref{basic_prop_EU}(5). Applying \ref{basic_prop_EU}(6), we get that \[\neg AR(q\vee s,p)\wedge\alpha=EU(\neg q\wedge\neg s,\neg p)\wedge\alpha\]\[\leq EU(\neg q\wedge\neg s\wedge\Box\alpha,\neg p\wedge\Box\alpha).\] Now, negation inverts the inequation: \[AR(q\vee s\vee \diamond\neg\alpha,p\vee\diamond\neg\alpha)\leq AR(q\vee s,p)\vee\neg\alpha,\] to which we can apply $\Box$ on both sides. Now, $\neg\alpha=\neg AR(q\vee r,p)$ by definition; and \ref{basic_prop_EU}(2) tells us that \[AR(q\vee(r\wedge s),p)=AR(q\vee r,p)\wedge AR(q\vee s,p).\] The two combined give that \[\Box (AR(q\vee s,p)\wedge \neg\alpha)=\Box(AR(a\vee (r\wedge s),p)\vee\neg\alpha)\]\[\leq \Box AR(a\vee (r\wedge s),p)\vee\diamond\neg\alpha,\] by a property of modal algebras. We can combine all of the above and get that\[\Box AR(q\vee s\vee \diamond\neg\alpha,p\vee\diamond\neg\alpha)\leq \Box AR(a\vee (r\wedge s),p)\vee\diamond\neg\alpha\]\[\leq s\vee\diamond\neg\alpha.\] Remember also that $p\leq s$. This gives that \[(p\vee\diamond\neg\alpha)\vee\Box AR(q\vee s\vee \diamond\neg\alpha,p\vee\diamond\neg\alpha)\leq s\vee\diamond\neg\alpha.\] Apply definition of $AF$ and get: \[AF(p\vee\diamond\neg\alpha,q\vee s)\leq s\vee\diamond\neg\alpha,\] which is equivalent to our very first claim. In the end, by definition we have \[AF_c(p,q,r)=AF(p,q)\wedge(p\vee\Box\alpha)\]\[=(AF(p,q)\wedge p)\vee(AF(p,q)\wedge\Box\alpha)\]\[\leq p\vee (AF(p,q)\wedge\Box\alpha)\]\[\leq p\vee (AF(p\vee\diamond\neg\alpha,q\vee s)\wedge\Box\alpha)\mbox{ by monotonicity of }AF\]\[\leq s \mbox{ by everything above.}\] This is what we wanted to prove.
+        \end{itemize}
+    \end{enumerate}
+\end{proof}
+
+Note that replacing $EU$ by $EU_c$ and $AF$ bu $AF_c$ does not change the expressivity of the syntax, as $EU(a,b)=EU_c(a,b,\top)$ and $AF(a,b)=AF_c(a,b,\top)$. We then use notations $EU$ and $AF$ for either, as this presents no ambiguity.
+\begin{proposition}\label{context_rule_gamma}
+    For every $p,q,r,\gamma$ in $\A$, we have:
+    \begin{enumerate}
+        \item if $\gamma \wedge EU(p,q,r) \neq \bot$, then $\gamma \wedge EU(p,q,r\wedge\neg\gamma)\neq\bot$;
+        \item if $\gamma \wedge AF(p,q,r) \neq \bot$, then $\gamma \wedge AF(p,q,r\wedge\neg\gamma)\neq\bot$.
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    Let $p$, $q$, $r$ and $\gamma$ be elements of $A$. We can write $\delta = \neg\gamma$ and prove the contraposition, namely\[EU(p,q,r\wedge \delta)\leq \delta\Rightarrow EU(p,q,r)\leq \delta.\] Suppose that $EU(p,q,r\wedge \delta)\leq \delta$, ie. $EU(p,q,r\wedge \delta)=EU(p,q,r\wedge \delta)\wedge\delta$. By \ref{contextual_as_fixpoints}, writing $\sigma: (p,q,x)\mapsto p\vee(q\wedge\diamond x) $ we have:\[\sigma(p,q,r\wedge EU(p,q,r\wedge \delta))=\sigma(p,q,r\wedge EU(p,q,r\wedge \delta)\wedge\delta)\]\[=EU(p,q,r\wedge \delta).\]But then, by minimality, we get that \[EU(p,q,r)\leq EU(p,q,r\wedge \delta)\leq\delta\mbox{ by assumption.}\]
+    
+    The proof for $AF$ is strictly analoguous.
+\end{proof}
+
+\begin{definition}\label{NNF}
+    A $CTL^f$-formula is in \emph{negative normal form (NNF)} if it is constructed by applying operators ($\wedge,\vee,\Box,\diamond,EU_c,AF_c,AR,EG$) to literals, ie. formulas of the form $\bot\mid\top\mid p\mid \neg p$.
+\end{definition} 
+\begin{proposition}\label{equiv_NNF}
+    Every $CTL^f$-formula is equivalent to one that is in NNF.
+\end{proposition}
+\begin{proof}
+    Negations can be pushed inwards, thanks to dualities, eg. $\neg\Box\equiv\diamond\neg$, etc.
+\end{proof}
+
+This is now that we make use of the results of (J\'onsson-Tarski) duality on modal algebras, shown for example in \cite{GehvG22} (chapter 4).
+\begin{definition}\label{dual_frame}
+    Given a modal algebra $\A$, we define its \emph{dual frame} as the pair $\A_*=(A_*,R_*)$, where
+    \begin{itemize}
+        \item $A_*$ is the set of \emph{ultrafilters} of $\A$ (given that $\A$ is a Boolean algebra, its filters are all incomparable for the inclusion order; they correspond to upward-closures of the atoms of $\A$);
+        \item $R_*$ is the relation on $A_*$ induced by $\diamond$, so that $xR_*y$ if and only if $\diamond [y]\subseteq x$.
+    \end{itemize}
+\end{definition}
+Still from \cite{GehvG22}, we can state the following theorem:
+\begin{theorem}\label{dual_modal_algebra}
+    Any modal algebra $\A$ is isomorphic to the complex algebra of its dual frame.
+\end{theorem}
+The difficulty here is that this is not true for every $CTL^f$-algebra.
+\begin{lemma}\label{exists_succ_R}
+    Let $\A$ and $\A_*$ be a modal algebra and its dual frame. Let $x\in A_*$. Consider $a\in\A$ such that $\diamond a\in x$. Then there exists $y\in A_*$ such that $a\in y$ and $xR_*y$.
+\end{lemma}
+\begin{proof}
+    Consider the set $\{b\in A\mid \diamond b\notin x\}$. It is an ideal in $\A$ not containing $a$. Indeed, it is downwards-closed, because if $c\leq b$, and $\diamond b \notin x$, then $\diamond c \notin x$ by monotonicity of $\diamond$. And it is stable by join, as $\diamond$ preserves join, so if it contained $\diamond(b\vee c)$ it would contain $\diamond b$. Therefore its complementary is a filter $:=y$ containing $a$, and $xR_*y$ quite obviously from definition.
+\end{proof}
+\begin{definition}\label{rho_equiv}
+    Let $\rho$ be a finite a set of formulas. For any $x,x'\in \A_*$, define \[x\sim_\rho x' \Leftrightarrow x\cap\rho=x'\cap\rho\] We call the equivalence class of a point $x$ under $\sim_\rho$ the \emph{$\rho$-type of $x$}. For any $x\in \A_*$, define the \emph{characteristic formula} \[\kappa(x,\rho):=\bigwedge\{\gamma\mid\gamma\in\rho\cap x\}\wedge\bigwedge\{\neg\gamma\mid\gamma\in\rho\backslash x\}\]
+\end{definition}
+\begin{lemma}\label{equiv_as_kappa}
+    For any set of formulas $\rho$ and points $x,x'\in\A_*$, we have \[x\sim_\rho x' \Leftrightarrow \kappa(x,\rho)\in x'.\] 
+\end{lemma}
+\begin{proof}
+    $x'$ being an ultrafilter, we have $\kappa\in x'$ if and only if for all $\gamma\in x\cap\rho$, $\gamma\in x'$, and for all $\gamma\in \rho\backslash x$, $\gamma\notin x'$. This is another way of saying $x\cap\rho = x'\cap\rho$.
+\end{proof}
+We combine this lemma with proposition \ref{context_rule_gamma} to obtain the following facts, which will allow to make `jumps' in the ultrafilter frame of $\A$.
+\begin{lemma}
+    Let $\rho$ be a finite set of formulas, let $\heartsuit\in\{EU,AF\}$, and let $\varphi$, $\psi$, and $\chi$ be formulas. For any $x\in\A_*$ such that $\heartsuit(\varphi,\psi,\chi)\in x$, there exists $x'\in\A_*$ such that $x\sim_\rho x'$ and $\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\in x'$.
+\end{lemma}
+\begin{proof}
+    We have $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi)\in x$, it is $\not=\bot$. Then, by \ref{context_rule_gamma}, $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\not=\bot$. Then it must belong to some ultrafilter $x'$ in $\A_*$, which is upwards-closed, so $\kappa(x,\rho)\in x'$ and $\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\in x'$. Moreover, by \ref{equiv_as_kappa}, we get our equivalence.
+\end{proof}
+\begin{definition}\label{F-L closure}
+    A set of $CTL^f$-formulas $\Gamma$ is called \emph{(Fischer-Ladner) closed} if the following hold:
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item $EU(\top,\top,\top)\in\Gamma$;
+        \item if $\varphi$ is in $\Gamma$, then any subformula of $\varphi$ is in $\Gamma$ too;
+        \item if $EG(\varphi,\psi)\in\Gamma$, then $\diamond EU(\psi\wedge EG(\varphi,\psi),\varphi)\in\Gamma$;
+        \item if $AR(\varphi,\psi)\in\Gamma$, then $\Box AR(\varphi,\psi)\in\Gamma$;
+        \item if $EU(\varphi,\psi,\chi)\in\Gamma$, then $\diamond(\chi\wedge EU(\varphi,\psi,\chi))\in\Gamma$;
+        \item if $AF(\varphi,\psi,\chi)\in\Gamma$, then $\Box AR(\psi\vee\chi,\varphi)\in\Gamma$;
+    \end{itemize}
+    The \emph{closure} of a set of $CTL^f$-formulas is the smallest closed set containing it. 
+\end{definition}
+\begin{lemma}\label{finite_closure}
+    The closure of a finite set of $CTL^f$-formulas is finite.
+\end{lemma}
+\begin{proof}
+    Obvious from definition \ref{F-L closure}.
+\end{proof}
+
+\subsection*{Model construction}
+Remember that we have fixed a consistent formula $\varphi_0$ at the beginning of this section (along with valuation $V:\bar{p}\to\A)$, and that we need to construct a model (a tree) in which it is satisfied. By \ref{finite_closure}, define $\Gamma_0$ to be the (finite) closure of $\{\varphi_0\}$.
+
+\begin{definition}\label{eventuality_fml}
+    We will call an \emph{eventuality formula} any formula of the form $\heartsuit(\varphi,\psi,\chi)$, with $\heartsuit$ being $AF$ or $EU$.
+
+    Moreover, we note the set of eventuality formulas in propositional variables $\bar{p}$ as $\Evp$.
+\end{definition}
+
+The tree $S$ we will construct will be a union of finite trees, which use a notion of \emph{partial tableau for $\Gamma_0$ in $\A$}. Informally, a partial tableau will consist of a finite tree $T$, along with two labellings $\alpha$ and $\beta$. Labelling $\alpha$ assigns to each node of $T$ an ultrafilter of $\A$, which corresponds to the set of formulas we wish to force in the node. On the other end, $\beta$ records the `current status' of eventuality formulas in $\Gamma_0$, via a data structure consisting of a finite list of tuples of the form $(\theta,\sigma,\rho,\tilde{\chi})$ for each node $v$. Each tuple is made of an eventuality formula $\theta$ of $\Gamma_0$ which lies in $\alpha(v')$ for some $v'\preceq v$; a status $\sigma$ ($a$ for active, $f$ for frozen or $e$ for extinguished); a finite set of formulas $\rho$, called the \emph{relevance set}; and a \emph{context formula} $\tilde{\chi}$ which will be a strenghtening of $\chi$.
+
+\begin{definition}\label{partial_tableau}
+    Let $\Gamma_0$ be a finite, closed set of $CTL^f$-formulas with variables in $\bar{p}$. Define \[\Sigma:=(\Gamma_0\cap\Evp)\times\{a,f,e\}\times\mathcal{P}_f(CTL^f(\bar{p}))\times CTL^f(\bar{p}).\] A \emph{partial tableau for $\Gamma_0$ in $\A$} is a tuple $(T,\alpha,\beta)$, where
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item $T$ is a finite tree;
+        \item $\alpha$ is a function from $T$ to $\A_*$, the set of ultrafilters of $\A$;
+        \item $\beta$ is a function from $T$ to $\Sigma_*$, the set of finite words over $\Sigma$.
+    \end{itemize}
+
+    For each $v\in T$ we write $\ell(v)$ for the length of $\beta(v)$. 
+    
+    For each $1\leq k\leq \ell(v)$, we write $\beta(v)_k=(\theta(v)_k,\sigma(v)_k,\rho(v)_k,\tilde{\chi}_k)$, with $\theta(v)_k=\heartsuit(v)_k(\varphi(v)_k,\psi(v)_k,\chi(v)_k)$.
+\end{definition}
+
+We also need to impose a few conditions on partial tableaux so that they are `well-formed', namely:
+\begin{enumerate}[label=(\alph*)]
+    \setlength\itemsep{0em}
+    \item elements of the list $\beta(v)$ persist in $\beta(v')$ for tree successors $v'$ of $v$;
+    \item if the first coordinate $\varphi$ of an eventuality formula lies in $\alpha(v)$, then it is extinguished;
+    \item $\rho$ always contains $\Gamma_0$; 
+    \item $EU$-formulas are never frozen;
+    \item $\tilde{\chi}$ is a strenghtening of $\chi$;
+    \item eventuality formulas that occur earlier in $\beta$ always lie in the relevance set;
+    \item $\alpha$ contains all non-extinguished eventuality formulas.
+\end{enumerate}
+
+Formally:
+\begin{definition}\label{well_formed_partial_tableau}
+    The partial tableau $(T,\alpha,\beta)$ for $\Gamma_0$ in $\A$ is said to be \emph{well-formed} if the following conditions hold for all $v\in T$ and for all $1\leq k\leq \ell(v)$:
+    \begin{enumerate}[label=(\alph*)]
+        \setlength\itemsep{0em}
+        \item $\forall v'\succeq v$, $\ell(v')\geq\ell(v)$ and $\theta(v')_k = \theta(v)_k$;
+        \item $\varphi(v)_k\in\alpha(v)\Rightarrow\sigma(v)_k=e$;
+        \item $\Gamma_0\subseteq\rho(v)_k$
+        \item $\heartsuit(v)_k=EU \Rightarrow \sigma(v)_k\not=f$;
+        \item $\tilde{\chi}(v)_k\vdash\chi(v)_k$;
+        \item $k'<k\Rightarrow\heartsuit_{k'}(\varphi(v)_{k'},\psi(v)_{k'},\tilde{\chi}(v)_{k'})\in\rho(v)_k$;
+        \item $\sigma(v)_k\not=e\Rightarrow\heartsuit_{k}(\varphi(v)_{k},\psi(v)_{k},\tilde{\chi}(v)_{k})\in\alpha(v)_k$.
+    \end{enumerate}
+\end{definition}
+
+
 
 
 \bibliography{bibli}

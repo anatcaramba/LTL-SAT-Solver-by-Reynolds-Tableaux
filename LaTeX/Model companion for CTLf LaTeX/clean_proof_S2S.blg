@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: clean_proof_S2S.aux
 The style file: plain.bst
 Database file #1: bibli.bib
-You've used 1 entry,
+You've used 2 entries,
             2118 wiz_defined-function locations,
-            503 strings with 4224 characters,
-and the built_in function-call counts, 292 in all, are:
-= -- 23
-> -- 13
+            509 strings with 4338 characters,
+and the built_in function-call counts, 543 in all, are:
+= -- 45
+> -- 26
 < -- 0
-+ -- 5
-- -- 4
-* -- 15
-:= -- 54
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 5
++ -- 10
+- -- 8
+* -- 27
+:= -- 98
+add.period$ -- 6
+call.type$ -- 2
+change.case$ -- 9
 chr.to.int$ -- 0
-cite$ -- 1
-duplicate$ -- 14
-empty$ -- 29
-format.name$ -- 4
-if$ -- 60
+cite$ -- 2
+duplicate$ -- 26
+empty$ -- 51
+format.name$ -- 8
+if$ -- 113
 int.to.chr$ -- 0
-int.to.str$ -- 1
-missing$ -- 1
-newline$ -- 8
-num.names$ -- 2
-pop$ -- 9
+int.to.str$ -- 2
+missing$ -- 3
+newline$ -- 13
+num.names$ -- 4
+pop$ -- 18
 preamble$ -- 1
-purify$ -- 4
+purify$ -- 8
 quote$ -- 0
-skip$ -- 8
+skip$ -- 15
 stack$ -- 0
-substring$ -- 5
-swap$ -- 2
+substring$ -- 10
+swap$ -- 3
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 4
+type$ -- 6
 warning$ -- 0
-while$ -- 2
-width$ -- 2
-write$ -- 12
+while$ -- 4
+width$ -- 3
+write$ -- 22
