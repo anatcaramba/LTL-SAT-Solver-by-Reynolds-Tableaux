@@ -8,6 +8,7 @@
 \usepackage{cancel}
 \usepackage{latexsym}
 \usepackage{amsfonts}
+\usepackage{bussproofs}
 \nocite{*}
 
 \newcommand{\A}{{\mathbb A}}
@@ -51,6 +52,7 @@ On the other hand, we will define \emph{semantics}, which will allow to interpre
     For convenience, we then also define the De Morgan duals of our binary operations, respectively $\wedge$ for $\vee$; $AR$ for $EU$; $AF$ for $EG$. For the unary operator, we set $\Box \varphi = \neg \diamond(\neg \varphi)$; Finally, we set $\top$ to be the negation of $\bot$, naturally.
 \end{definition}
 
+
 \begin{definition}\label{quasi_eq_CTLf}
     We define the \emph{quasi-equational theory $CTL^{f}$} by requiring the formulas to satisfy the following axioms:
     \begin{enumerate}
@@ -70,13 +72,16 @@ On the other hand, we will define \emph{semantics}, which will allow to interpre
     \end{enumerate}
 \end{definition}
 
-\begin{definition}\label{CTLf-algebra}
-    Given what is said just above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\A=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
-\end{definition}
-
 Importantly, we remark that for all $a,b$, $AR(a,b)$ is the greatest post-fixpoint of $x \mapsto a \wedge (b \vee \Box x)$, while $AF(a,b)$ is the least pre-fixpoint of $x \mapsto a \vee \Box AR(b\vee c,a)$.
 
-Also, the way EU and EG formulas are defined reminds the fixpoint operators of the \emph{$\mu$-calculus}. For example, for every $a,b$, $EU(a,b)$ could have been defined as $\mu x.(a \vee (b \wedge \diamond x))$, the least fixpoint of this monotone function (it is enough to say the least \emph{pre-fixpoint}). As for EG, it is a greatest \emph{(post-)} fixpoint, so it could have been defined with a $\nu$ operator, where $\nu f = \neg\mu(\neg f) $. We can see that such a definition of EG makes apparent a nesting of a $\nu$ and a $\mu$ operator. This is what makes the logic hard to simplify, compared to LTL which only contains one such fixpoint operator.  
+What is called a \emph{quasi-equational theory} corresponds to what we expect of a syntax. That is, there are \emph{equations} (equalities) which correspond to axioms of a deduction system, like: \AxiomC{}\UnaryInfC{$\top\vdash\diamond\top$} \[\DisplayProof\]
+But there also are \emph{quasi-equations} (implications) which translate to deduction rules: \AxiomC{$c\vdash a\wedge \diamond EU(b\wedge c,a)$}\UnaryInfC{$c \vdash EG(a,b)$}\[\DisplayProof\]
+However, we rarely (or never) use the rules properly speaking, but we define a structure which embodies those properties and use operations on it. This is a step in advance towards semantics, in some sense.
+\begin{definition}\label{CTLf-algebra}
+    Given what is said above, we can deduce the definition of a \emph{$CTL^f$-algebra}, which is a tuple $\A=(A,\bot,\neg,\vee,\diamond,EU,EG)$ which verifies every axiom of $CTL^f$ quasi-equational theory.
+\end{definition}
+
+Also, the way EU and EG formulas are defined reminds the fixpoint operators of the \emph{$\mu$-calculus}. For example, for every $a,b$, $EU(a,b)$ could have been defined as $\mu x.(a \vee (b \wedge \diamond x))$, the least fixpoint of this monotone function (it is enough to say the least \emph{pre-fixpoint}). As for EG, it is a greatest \emph{(post-)} fixpoint, so it could have been defined with a $\nu$ operator, where $\nu f = \neg\mu(\neg f) $. More precisely: \[EG(a,b)=\nu.y(a\wedge\diamond\mu.x((b\wedge y)\vee(a\wedge\diamond x)).\] This makes apparent a nesting of a $\nu$ and a $\mu$ operator. This is what makes the logic hard to simplify, compared to LTL which only contains one such fixpoint operator.  
 \begin{definition}\label{interp_form_algebra}
     For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\A$, we can define a \emph{valuation} $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^A(V)$).
 
@@ -138,16 +143,19 @@ Now, in order to prove completeness, we introduce the notion of \emph{complex al
 Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_n, s=s_0Rs_1R...Rs_n, s_k\in a \mbox{ for all } k<n \mbox{ and } s_n \in b\}\]
 We can now state the corresponding lemma for $EG$:
 \begin{lemma}\label{EG_as_inters}
-    For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that \[EG_R(a,b)=\bigcap_{i=0}^{\infty}D'_n(a,b)\] where $D'_n$ is defined inductively as
-        \begin{equation*}
-            \begin{cases}
-                D'_0(a,b)=\mathcal{P}(S)\\
-                D'_{n+1}(a,b)=a\cap\diamond_REU_R(b\cap D'_n(a,b),a)
-            \end{cases}
-        \end{equation*}
+    For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that $EG_R(a,b)$ is the set:
+\begin{multline*}
+    \{s\in S\mid \mbox{there exists an infinite path } s=s_0Rs_1R...\\
+    \mbox{ such that }\forall k\in \mathbb{N} \mbox{ } s_k\in a\mbox{ and } s_{j}\in b \mbox{ for infinitely many } j \in\mathbb{N}\}
+\end{multline*}
 \end{lemma}
-
-Note that $D'_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_p, s=s_0Rs_1R...Rs_p,\forall k\leq p \mbox{ } s_k\in a \mbox{ and } s_k \in b \mbox{ for }n\mbox{ }s_k\}\]
+Attempts at finding a more formal set have failed, as it seems that the concept of `infinite path' is only introduced by operator $EG$ itself.
+\begin{proof}
+    \begin{itemize}
+        \item[$\subseteq$] By induction on n we show $D'_n(a,b) \supseteq EG_R(a,b)$.\\ For $n=0$ this is obvious. For the induction step, let $s\in D_{n+1}(a,b)$. By the pre-fixpoint definition of $EU$ we have $a\leq EU_R(a,b)$ and $(b\cap\diamond EU_R(a,b))\leq EU_R(a,b)$. It follows that if $s$ is in $a$, it is directly in $EU_R(a,b)$; and in the other case, there exists $s'$ in $D_n(a,b)$ such that $sRs'$ By hypothesis $s'\in EU_R(a,b)$. We have exactly $s\in b\cap\diamond EU_R(a,b)$, from which we conclude $s\in EU_R(a,b)$.
+        \item[$\supseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
+    \end{itemize}
+\end{proof}
 
 \begin{proposition}\label{equiv_complex_alg}
     Consider a transition system $(S,R)$ along with a a $\bar{p}$-coloring $\sigma : S \to \mathcal{P}(\bar{p})$. This coloring corresponds exactly to a valuation $V_\sigma:\bar{p}\to \mathcal{P}(S)$, as we in fact have a bijection between $\bar{p}$-colorings and such valuations.
