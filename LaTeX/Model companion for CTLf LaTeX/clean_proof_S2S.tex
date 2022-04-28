@@ -9,6 +9,7 @@
 \usepackage{latexsym}
 \usepackage{amsfonts}
 \usepackage{bussproofs}
+\usepackage{tikz}
 \nocite{*}
 
 \newcommand{\A}{{\mathbb A}}
@@ -140,22 +141,57 @@ Now, in order to prove completeness, we introduce the notion of \emph{complex al
         \item[$\subseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
     \end{itemize}
 \end{proof}
-Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_n, s=s_0Rs_1R...Rs_n, s_k\in a \mbox{ for all } k<n \mbox{ and } s_n \in b\}\]
+Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_n, s=s_0Rs_1R...Rs_n, s_k\in a \mbox{ for all } k<n \mbox{, and } s_n \in b\}\]
 We can now state the corresponding lemma for $EG$:
-\begin{lemma}\label{EG_as_inters}
+\begin{lemma}\label{EG_as_set}
     For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that $EG_R(a,b)$ is the set:
 \begin{multline*}
     \{s\in S\mid \mbox{there exists an infinite path } s=s_0Rs_1R...\\
-    \mbox{ such that }\forall k\in \mathbb{N} \mbox{ } s_k\in a\mbox{ and } s_{j}\in b \mbox{ for infinitely many } j \in\mathbb{N}\}
+    \mbox{ such that }\forall k\in \mathbb{N} \mbox{ } s_k\in a\mbox{, and } s_{j}\in b \mbox{ for infinitely many } j \in\mathbb{N}\}
 \end{multline*}
 \end{lemma}
-Attempts at finding a more formal set have failed, as it seems that the concept of `infinite path' is only introduced by operator $EG$ itself.
 \begin{proof}
     \begin{itemize}
         \item[$\subseteq$] By induction on n we show $D'_n(a,b) \supseteq EG_R(a,b)$.\\ For $n=0$ this is obvious. For the induction step, let $s\in D_{n+1}(a,b)$. By the pre-fixpoint definition of $EU$ we have $a\leq EU_R(a,b)$ and $(b\cap\diamond EU_R(a,b))\leq EU_R(a,b)$. It follows that if $s$ is in $a$, it is directly in $EU_R(a,b)$; and in the other case, there exists $s'$ in $D_n(a,b)$ such that $sRs'$ By hypothesis $s'\in EU_R(a,b)$. We have exactly $s\in b\cap\diamond EU_R(a,b)$, from which we conclude $s\in EU_R(a,b)$.
         \item[$\supseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
     \end{itemize}
 \end{proof}
+
+Operator $EU$ is \emph{constructive} (see \cite{Santo08}), because it can be described using pre-existing operators of the syntax; whereas the concept of `infinite path' introduced by operator $EG$ cannot be reduced to anything else, so $EG$ is not constructive. In particular, we do \emph{not} have the equality : \[EG_R(a,b)=\bigcap_{i=1}^\infty D'_n(a,b)\] where
+\begin{equation*}
+    \begin{cases}
+        D'_0(a,b)=\mathcal{P}(S)\\
+        D'_{n+1}(a,b)=a\cap\diamond_R EU_R(b\cap D'_n(a,b),a)
+    \end{cases}
+\end{equation*}
+Although the analogy is pretty clear (the sets are defined as an sequence induced by the `fixpoint function' of the operator), it doesn't work because it fails to grasp infinite paths. For example, we can construct a tree belonging to every $D'_n(a,b)$ (for every $n$ there is a finite path where every node is in $a$, and $b$ contains at least $n$ nodes), but such that no infinite path has the wanted property (of belonging to the set described in \ref{EG_as_set}). Informally, the following infinite binary tree:
+
+\begin{center} 
+\begin{tikzpicture}
+        \node {$\neg b$}[sibling distance = 2.5cm][level distance = 1 cm]
+            child {node [red]{$b$}[sibling distance = 1cm]
+                child{node {$\neg b$}[sibling distance = 1cm]}
+                child{node {$\neg b$}[sibling distance = 2.5 cm]}}
+            child {node {$\neg b$} [sibling distance = 2.5cm]
+                child{node[red]{$b$}[sibling distance = 1cm]
+                    child {node [red]{$b$}[sibling distance = 1cm]
+                        child {node {$\neg b$}[sibling distance = 1cm]}
+                        child {node {$\neg b$}[sibling distance = 2.5cm]}}
+                    child {node {$\neg b$}[sibling distance = 2.5cm]}}
+                child{node {$\neg b$}[sibling distance = 2.5cm]
+                    child {node [red]{$b$}[sibling distance = 1cm]
+                        child{node [red]{$b$}[sibling distance = 1cm]
+                            child {node [red]{$b$}[sibling distance = 1cm]
+                                child {node {$\neg b$}[sibling distance = 1cm]}
+                                child {node {$\neg b$}[sibling distance = 2.5cm]}}
+                            child {node {$\neg b$}[sibling distance = 2.5cm]}}
+                        child {node {$\neg b$}[sibling distance = 2.5cm]}}
+                    child {node {$\neg b$}[sibling distance = 2.5cm]
+                        child{node{...}}
+                        child{node{...}}}}};
+    \end{tikzpicture}
+\end{center}
+is in every $D'_n(\mathcal{P}(S),b)$ but not in $EG_R(\mathcal{P}(S),b)$.
 
 \begin{proposition}\label{equiv_complex_alg}
     Consider a transition system $(S,R)$ along with a a $\bar{p}$-coloring $\sigma : S \to \mathcal{P}(\bar{p})$. This coloring corresponds exactly to a valuation $V_\sigma:\bar{p}\to \mathcal{P}(S)$, as we in fact have a bijection between $\bar{p}$-colorings and such valuations.
@@ -166,7 +202,7 @@ Attempts at finding a more formal set have failed, as it seems that the concept 
 \begin{proof}
     First, we show there is a bijection between $\bar{p}$-colorings $\sigma:S \to \mathcal{P}(\bar{p})$ and valuations $V:\bar{p}\to \mathcal{P}(S)$. Given $\sigma$, define $V_\sigma: p\mapsto\{s\in S \mid p\in \sigma(s)\}$. And conversely, given $V$, we can define $\sigma_V: v\mapsto\{p\in\bar{p}\mid v\in V(p)\}$.
 
-    Second, we show the equivalence, by induction on the structure of $\varphi$ Looking at the definitions, it should be obvious for all cases up to diamond; as for $EU$ and $EG$, the wanted equivalence is a consequence of lemmas \ref{EU_as_union} and \ref{EG_as_inters}.
+    Second, we show the equivalence, by induction on the structure of $\varphi$ Looking at the definitions, it should be obvious for all cases up to diamond; as for $EU$ and $EG$, the wanted equivalence is a consequence of lemmas \ref{EU_as_union} and \ref{EG_as_set}.
 \end{proof}
 \section{Completeness proof}\label{sec:compl}    
 
@@ -255,9 +291,30 @@ Note that replacing $EU$ by $EU_c$ and $AF$ bu $AF_c$ does not change the expres
 \begin{proof}
     Let $p$, $q$, $r$ and $\gamma$ be elements of $A$. We can write $\delta = \neg\gamma$ and prove the contraposition, namely\[EU(p,q,r\wedge \delta)\leq \delta\Rightarrow EU(p,q,r)\leq \delta.\] Suppose that $EU(p,q,r\wedge \delta)\leq \delta$, ie. $EU(p,q,r\wedge \delta)=EU(p,q,r\wedge \delta)\wedge\delta$. By \ref{contextual_as_fixpoints}, writing $\sigma: (p,q,x)\mapsto p\vee(q\wedge\diamond x) $ we have:\[\sigma(p,q,r\wedge EU(p,q,r\wedge \delta))=\sigma(p,q,r\wedge EU(p,q,r\wedge \delta)\wedge\delta)\]\[=EU(p,q,r\wedge \delta).\]But then, by minimality, we get that \[EU(p,q,r)\leq EU(p,q,r\wedge \delta)\leq\delta\mbox{ by assumption.}\]
     
-    The proof for $AF$ is strictly analoguous.
+    The proof for $AF$ is strictly analoguous. The above proof actually makes use of a general fixpoint argument.
 \end{proof}
 
+The last property is not obvious semantically, and explaining why it holds helps understand what it means. Semantically, the hypothesis is : $\gamma\cap EU_R(p,q,r)\not=\emptyset$. By replacing $EU$ by its expression given in \ref{EU_as_union}, and by basic rules of the algebra, we get that this is equivalent to \[(\gamma\cap p)\cup \bigcup_{n=0}^\infty(q\cap\gamma\cap\diamond_RD_n(p\cap r,q\cap r))\not=\emptyset.\] In other terms, we suppose that:
+\begin{equation*}
+    \begin{cases}
+        \gamma\cap p \not=\emptyset \\
+        \mbox{or }\exists n\geq 0,\exists s\in q\cap\gamma, sRs' \mbox{ for } s' \mbox{ in }D_n(p\cap r,q\cap r).
+    \end{cases}
+\end{equation*}
+Now remember that we want to prove:
+\begin{equation*}
+    \begin{cases}
+        \gamma\cap p \not=\emptyset \\
+        \mbox{or }\exists n\geq 0,\exists s\in q\cap\gamma, sRs' \mbox{ for } s' \mbox{ in }D_n(p\cap r\cap\neg\gamma,q\cap r\cap\neg\gamma).
+    \end{cases}
+\end{equation*}
+The case where $\gamma\cap p \not=\emptyset$ is obvious. In the other case, take $n\geq 0$, $s\in q\cap\gamma$ and $s'\in D_n(p\cap r,q\cap r)$, where $sRs'$. We then have a path $s'=s'_0R...Rs'_n$, where $s'_k\in q\cap r$ $\forall k<n$ and $s'_n\in p\cap r$. Now, if $s'_n$ is in $\gamma$, then we have $\gamma\cap p \not= \emptyset$, which was wanted. If not, then $s'_n\in \neg\gamma \cap r\cap p$. Then we may discriminate on whether $s'_{n-1}$ belongs or not to $\gamma$. If it does not, then $s'_{n-1}\in \neg\gamma\cap r\cap q$; we go back inductively until we get a $k$ such that $s'_k$ is in $\gamma$. If this occurs for no $k\geq 0$, then $s'_{-1}:=s$ is a predecessor of $s'_0$ belonging to $\gamma\cap q$ by hypothesis. In either case, we get a node $s_k$ in $q\cap\gamma$, such that its successor is in $D_{n-k}(p\cap r\cap\neg\gamma,q\cap r \cap\neg\gamma)$.
+\begin{lemma}\label{another_fix_AFc}
+    For any elements $p$, $q$, $r$ in a $CTL^f$-algebra $\A$, we have \[AF_c(p,q,r)=p\vee\Box((q\vee r)\wedge AF_c(p,q,r)).\]
+\end{lemma}
+\begin{proof}
+    Write $t:=q\vee(r\wedge AF_c(p,q,r)$. By proposition \ref{contextual_as_fixpoints}, $AF_c(p,q,r)=p\vee\Box AT(t,p)$. Using this fact and the expression of $AR$ as a fixpoint, we have \[AR(t,p)=t\wedge(p\vee\Box AR(t,p))=t\wedge AF_c(p,q,r)=(q\vee r)\wedge AF_c(p,q,r).\] Therefore, we have the wanted equality.
+\end{proof}
 \begin{definition}\label{NNF}
     A $CTL^f$-formula is in \emph{negative normal form (NNF)} if it is constructed by applying operators ($\wedge,\vee,\Box,\diamond,EU_c,AF_c,AR,EG$) to literals, ie. formulas of the form $\bot\mid\top\mid p\mid \neg p$.
 \end{definition} 
@@ -296,12 +353,12 @@ The difficulty here is that this is not true for every $CTL^f$-algebra.
 \begin{proof}
     $x'$ being an ultrafilter, we have $\kappa\in x'$ if and only if for all $\gamma\in x\cap\rho$, $\gamma\in x'$, and for all $\gamma\in \rho\backslash x$, $\gamma\notin x'$. This is another way of saying $x\cap\rho = x'\cap\rho$.
 \end{proof}
-We combine this lemma with proposition \ref{context_rule_gamma} to obtain the following facts, which will allow to make `jumps' in the ultrafilter frame of $\A$.
-\begin{lemma}
+We combine this lemma with proposition \ref{context_rule_gamma} to obtain the following fact, which will allow to make `jumps' in the ultrafilter frame of $\A$.
+\begin{lemma}\label{add_neg_kappa}
     Let $\rho$ be a finite set of formulas, let $\heartsuit\in\{EU,AF\}$, and let $\varphi$, $\psi$, and $\chi$ be formulas. For any $x\in\A_*$ such that $\heartsuit(\varphi,\psi,\chi)\in x$, there exists $x'\in\A_*$ such that $x\sim_\rho x'$ and $\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\in x'$.
 \end{lemma}
 \begin{proof}
-    We have $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi)\in x$, it is $\not=\bot$. Then, by \ref{context_rule_gamma}, $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\not=\bot$. Then it must belong to some ultrafilter $x'$ in $\A_*$, which is upwards-closed, so $\kappa(x,\rho)\in x'$ and $\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\in x'$. Moreover, by \ref{equiv_as_kappa}, we get our equivalence.
+    We have $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi)\in x$, so it is not equal to $\bot$. Then, by \ref{context_rule_gamma}, $\kappa(x,\rho)\wedge\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\not=\bot$. Then it must belong to some ultrafilter $x'$ in $\A_*$, which is upwards-closed, so $\kappa(x,\rho)\in x'$ and $\heartsuit(\varphi,\psi,\chi\wedge\neg\kappa(x,\rho))\in x'$. Moreover, by \ref{equiv_as_kappa}, we get our equivalence.
 \end{proof}
 \begin{definition}\label{F-L closure}
     A set of $CTL^f$-formulas $\Gamma$ is called \emph{(Fischer-Ladner) closed} if the following hold:
@@ -375,8 +432,67 @@ Formally:
     \end{enumerate}
 \end{definition}
 
+Now, we will describe how to unravel a well-formed partial tableau. As we will prove, the unravelling of a well-formed partial tableau will remain well-formed. Then, we will construct a tree which statisfies $\varphi_0$, thanks to the unravelling and its preservation of properties.
 
+First, we give an informal explanation of the unravelling. We consider the ultrafilter frame of $\A$, $\A_*=(A_*,R_*)$ (\ref{dual_frame}). Normally, in a tableau construction, we would add successors to $v$ for all $\diamond$-formulas in $\Gamma_0\cap\alpha(v)$, and label them by $R_*$-successors of $\alpha(v)$. But here, we also need to treat eventuality-formulas.
 
+Instead of labelling children of $v$ by successors of $\alpha(v)$, we make a `jump' in the ultrafilter frame from $\alpha(v)$ to $x_v$, given by the first active eventuality formula $\heartsuit_m(\varphi_m,\psi_m,\chi_m)$ in the list $\beta(v)$; and we label children of $v$ by $R_*$-successors of $x_v$. The choice of $x_v$ is guided by the relevance set $\rho_m$, and ensures that:
+\begin{itemize}
+    \item[-]$\alpha(v)$ and $x_v$ have the same $\rho_m$-type;
+    \item[-]$\neg\kappa(\alpha(v),\rho_m)$ can be added conjuctively to $\tilde{\chi}_m$ while keeping the partial tableau well-formed.  
+\end{itemize}
+The existence of such an $x_v$ will be given by lemma \ref{add_neg_kappa}. The point of making this jump is to reinforce the statement $\heartsuit_m(\varphi_m,\psi_m,\chi_m)$, so that no infinite loops occur in the construction.
+
+\begin{definition}\label{one-step_unravelling}
+    We define the \emph{one-step unravelling} of a well-formed partial tableau $(T,\alpha,\beta)$. For each leaf $v$ of $T$, we add a finite set of children $C_v:=\{w_\lambda\mid\diamond\lambda\in\Gamma_0\cap\alpha(v)\}$. Note that $C_v$ is not empty, because $\diamond(\top\wedge EU(\top,\top,\top))\in\Gamma_0$ by definition \ref{F-L closure}, and because $\diamond(\top\wedge EU(\top,\top,\top))=\top$ in $\A$, so it is in ultrafilter $\alpha(v)$. Now, we specify a value for $\alpha$ and $\beta$ on each of those children.
+
+    Fix a leaf $v$. We choose an auxiliary filter $x_v$ in $\A_*$. If $\sigma_k\not=$ a for all $1\leq k \leq \ell(v)$, define $x_v=\alpha(v)$. Otherwise, name $m$ the first such $k$ with $\sigma_k=$ a. We call $m$ the \emph{active index} at $v$. Because $(T,\alpha,\beta)$ is well-formed, by \ref{well_formed_partial_tableau}(g), we have $\heartsuit_m(\varphi_m,\psi_m,\tilde{\chi}_m)\in\alpha(v)$. Therefore, by \ref{add_neg_kappa}, we have $\heartsuit_m(\varphi_m,\psi_m,\tilde{\chi}_m\wedge\neg\kappa(\alpha(v),\rho_m))\in x_v$ for some $x_v\sim_{\rho_m}\alpha(v)$. Write $\gamma_v:=\kappa(\alpha(v),\rho_m)$.
+    
+    Let $w_\lambda\in C_v$. We use $x_v$ to define $\alpha(w_\lambda)$ and $\beta(w_\lambda)$. For $\alpha$, there are two cases. Note that $m$ might not be defined, in which case we act as if $\heartsuit_m=AF$ for $\alpha$, and as if $m=\infty$ for $\beta$. (WHAT do we take for $rho_m$ if m is not def ??)
+    \begin{itemize}
+        \item If $\heartsuit_m=AF$, or $\heartsuit_m=EU$ and $\lambda\not=\chi_m\wedge EU(\varphi_m,\psi_m,\chi_m)$: since $\diamond\lambda\in\Gamma_0\cap\alpha(v)$, we have $\diamond\lambda\in x_v$, because $\Gamma_0\subseteq\rho_m$ and $\alpha(v)\sim_{\rho_m} x_v$. Therefore, by lemma \ref{exists_succ_R}, pick $\alpha(w_\lambda)$ such that $x_vR_*\alpha(w_\lambda)$ and $\lambda\in\alpha(w_\lambda)$.
+        \item If $\heartsuit_m=EU$ and $\lambda=\chi_m\wedge EU(\varphi_m,\psi_m,\chi_m)$: by \ref{well_formed_partial_tableau}(b) and the fact that $\sigma_m=a$, we have $\varphi_m\notin\alpha(v)$. Since $\alpha(v)\sim_{\rho_m} x_v$ and $\varphi_m\in\Gamma_0\subseteq\rho_m$, we have $\varphi_m\notin x_v$, so $\neg\varphi_m\in x_v$. Also, $EU(\varphi_m,\psi_m,\tilde{\chi}_m\wedge\neg\gamma_v)\in x_v$ by the choice of $x_v$. Applying the general fact (\ref{contextual_as_fixpoints}) that $EU(p,q,r)\wedge \neg p\leq\diamond(r\wedge EU(p,q,r))$, we obtain $\diamond(\tilde{\chi}_m\wedge\neg\gamma_v\wedge EU(\varphi_m,\psi_m,\tilde{\chi}_m\wedge\neg\gamma_v))\in x_v$. By lemma \ref{exists_succ_R}, pick $\alpha(w_\lambda)$ such that $x_vR_*\alpha(w_\lambda)$ and $\tilde{\chi}_m\wedge\neg\gamma_v\wedge EU(\varphi_m,\psi_m,\tilde{\chi}_m\wedge\neg\gamma)\in\alpha(w_\lambda)$. Note that in particular, $\chi_m\wedge EU(\varphi_m,\psi_m,\chi_m)\in\alpha(w_\lambda)$, since $\tilde{\chi}_m\wedge\neg\gamma_v\leq\chi_m$, and $EU$ is monotone.
+    \end{itemize}
+    
+    Then, we construct the word $\beta(w_\lambda)$ as an update of the word $\beta(v)$. We apply the following steps:
+    \begin{enumerate}
+        \item Let New($w_\lambda$) $:=\{\theta\in\alpha(w_\lambda)\cap\Gamma_0\cap Ev(\bar{p})\mid\forall 1\leq k\leq \ell(v):\mbox{ if }\theta_k(v)=\theta, \mbox{ then }\sigma_k(v)=\mbox{e}\}$. Note that this set is not empty, as it contains $EU(\top,\top,\top)$. For each $\theta=\heartsuit(\varphi,\psi,\chi)$ in New($w_\lambda$), add one letter, $(\theta,\mbox{a},\rho',\chi)$, to the end of the word, where $\rho'=\bigcup_{k=1}^{\ell(v)}\rho_k$.
+        \item For each position $k$, put \\ $\tilde{\chi}(w_\lambda)_k=\begin{cases}
+            \tilde{\chi}(v)_k \mbox{ if } k<m,\\
+            \tilde{\chi}(v)_m\wedge\neg\gamma_v \mbox{ if } k=m,\\
+            \chi(v)_k \mbox{ if } k>m\\
+        \end{cases}$
+        \item For each position $k>m$, add the formula $\heartsuit_m(\varphi_m,\psi_m,\tilde{\chi}(v)_m\wedge\neg\gamma_v)$ to the set $\rho_k$.
+        \item For each positon $k$ such that $\varphi_k\in\alpha(w_\lambda)$, change $\sigma_k$ into e.
+        \item For each position $k$, if $\theta_k = EU(\varphi_k,\psi_k,\chi_k)$ and $\lambda$ is not equal to $\chi_k\wedge EU(\varphi_k,\psi_k,\chi_k)$, change $\sigma_k$ into e.
+        \item For each position $k$, if $\heartsuit_k = AF$, $\psi_k\in\alpha(w_\lambda)$, and $\sigma_k =$ a, change $\sigma_k$ into f.
+        \item For each position $k<m$, if $\heartsuit_k = AF$, $\sigma_k=$ f, $\varphi_k\notin\alpha(w_\lambda)$ and $\psi_k\notin\alpha(w_\lambda)$, change $\sigma_k$ into a.
+    \end{enumerate}
+\end{definition}
+\begin{lemma}\label{unravelling_wf}
+    The one-step unravelling of a well-formed partial tableau is well-formed.
+\end{lemma}
+\begin{proof}
+    Let us check that all conditions of definition \ref{well_formed_partial_tableau} are fulfilled.
+    \begin{enumerate}[label=(\alph*)]
+        \setlength\itemsep{0em}
+        \item is natural from the fact that $\beta$ is contructed as an update of its predecessor;
+        \item is verified, by point (4) of the construction of $\beta$;
+        \item is verified by (1);
+        \item by (1) and (5);
+        \item by (1) and (2);
+        \item by (1);
+        \item Let $v$ be a leaf of $T$, $m$ the active index at $v$, and $w_\lambda$ a child of $v$ in the one-step unravelling of $T$. Let $1\leq k\leq\ell(v)$ be such that $\sigma(w_\lambda)_k\not=$ e. We need to show that $\heartsuit_k(\varphi_k,\psi_k,\tilde{\chi}(w_\lambda)_k)\in\alpha(w_\lambda)$. We distinguish three cases:
+        \begin{itemize}
+            \item If $k<m$: by definition of $m$, we have $\sigma(v)_k\not=$ a, but $\sigma(w_\lambda)_k\in\{\mbox{a,f}\}$. Therefore $\sigma(v)_k=$ f. In particular $\heartsuit_k=AF$. Because $T$ is well-formed, $AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k)$ belongs to $\rho_m\cap\alpha(v)$, so $AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k)$ is in $x_v$. Also, since $\sigma(v)\not=$ e, we have $\neg\varphi_k\in x_v$. From \ref{another_fix_AFc}, it follows that \[AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k)\wedge\neg\varphi_k\leq\Box AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k).\] Finally $AF(\varphi_k,\psi_k,\tilde{\chi}(w_\lambda)_k)=AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k)$ is in $\alpha(w_\lambda)$, as $w_\lambda$ is a child of $v$ by construction.
+            \item If $k=m$: if $\heartsuit_m = EU$, then $\sigma(w_\lambda)_m \not=e$ only if $\lambda$ is equal to $\chi_m\wedge EU(\varphi_m,\psi_m,\chi_m)$, and it is true by construction that $\alpha(w_\lambda)$ contains $EU(\varphi_m,\psi_m,\tilde{\chi}_m)$. If $\heartsuit_m = AF$, note that $x_v$ contains $AF(\varphi_m,\psi_m,\tilde{\chi}_m)$ by construction. Also, $\neg\varphi_m\in x_v$ because $\sigma(v)_m =$ a. Again using lemma \ref{another_fix_AFc}, $AF(\varphi_m,\psi_m,\tilde{\chi}_m)\in\alpha(w_\lambda)$.
+            \item If $k>m$: If $\heartsuit_k = EU$, then, since $\sigma(w_\lambda)_k\not=$ e, by (5) in definition \ref{well_formed_partial_tableau} we must have $\lambda = \chi_k\wedge EU(\varphi_k,\psi_k,\chi_k)$. In particular $EU(\varphi_k,\psi_k,\chi_k)\in\alpha(w_\lambda)$. If $\heartsuit_k=AF$, then since $\tilde{\chi}(v)_k\leq\chi_k$ and $AF(\varphi_k,\psi_k,\tilde{\chi}(v)_k)\in\alpha(v)$ by well-formedness of $T$, we have $AF(\varphi_k,\psi_k,\chi_k)\in\alpha(v)$. Since $\sigma(v)_k\not=$ e, we have $\neg\varphi_k\in\alpha(v)$. Since $AF(\varphi_k,\psi_k,\chi_k)$ and $\neg\varphi_k$ lie in $\Gamma_0\subseteq\rho(v)_k$, we also have $AF(\varphi_k,\psi_k,\chi_k)$ and $\neg\varphi_k$ in $x_v$. As before, $\Box AF(\varphi_k,\psi_k,\chi_k)$ is in $x_v$, so $\alpha(w_\lambda)$ contains $AF(\varphi_k,\psi_k,\chi_k)$.
+        \end{itemize}
+    \end{enumerate}
+\end{proof}
+\begin{definition}\label{model_for_consistency}
+    We define a tree which models $\varphi_0$.
+\end{definition}
 
 \bibliography{bibli}
 \end{document}
