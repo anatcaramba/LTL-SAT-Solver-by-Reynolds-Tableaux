@@ -1,0 +1,131 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{bussproofs}
+\usepackage{tikz}
+\nocite{*}
+
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+
+\newcommand{\A}{{\mathbb A}}
+\newcommand{\Evp}{{Ev(\bar{p})}}
+\newcommand{\ARp}{{AR(p,\bot)}}
+
+\bibliographystyle{plain}
+\title{Determining a minimal non-trivial minorant for every consistent $CTL^f$ formula}
+\author{Anatole Leterrier}
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+
+\begin{document}
+\maketitle
+Our goal here is to construct an ultrafilter $x_0$ which contains $\varphi_0$, if the latter is a consistent $CTL^f$-formula ($\varphi_0\not=\bot$ in some $CTL^f$-algebra $\A$). We know such a $x_0$ exists, but finding it for every $\varphi_0$ seems pretty hard. My first attempts have not been conclusive.
+
+What is sure is that a formula $\varphi_{0,m}$ such that $x_0 =$ $\uparrow\varphi_{0,m}$ must be absolutely restrictive on which trees can be accepted as models. Let us precise what this means. 
+\begin{definition}
+    Let $a$ be a consistent $CTL^f$-formula. We say that a formula $a_m$ is a \emph{minimal non-trivial minorant for $a$} if 
+    \begin{enumerate}
+        \item $\bot<a_m\leq a$
+        \item for every $CTL^f$-formula $\psi$ we have either $\psi\wedge a_m=a_m$, or $\psi\wedge a_m=\bot$.
+    \end{enumerate}
+\end{definition}
+For every $p$ in $\bar{p}$, for every $n \geq 0$, we should have either $\diamond^np \wedge \varphi_{0,m} = \varphi_{0,m}$, or $\diamond^np \wedge \varphi_{0,m} =\bot$. In other terms, either all models of $\varphi_{0,m}$ contain a $n$-th successor for the root whose coloring contains $p$, either none of them does (we are not yet allowed to switch between semantics and syntactic equations, but this how I guess which results should be true). The same reasoning with $\diamond^n\neg p$ leads us to say that for every $n$, for every $p$ in $\bar{p}$, \[\varphi_{0,m}\vdash\Box^n p\mbox{ or } \varphi_{0,m}\vdash\Box^n\neg p.\]
+One way to restate this is by saying that colorings of models are determined by formula $\varphi_{0,m}$. Thus, we would like to construct this formula from $\varphi_0$ by fixing colorings which are not determined by it. An immediate problem is that formulas in the logic are finite, while trees are infinite. Even with the simplest of consistent formulas, $\varphi_0 = \top$, building $\varphi_{0,m}$ only with boxes is impossible, as there are infinitely many formulas $\bigwedge_{p\in\bar{p}}\bigwedge_{k=0}^n\Box^k p$ which are below $\top$. We need a formula which is below $\bigwedge_{p\in\bar{p}}\bigwedge_{k=0}^n\Box^k p$ for every $n$, and a fitting candidate is $\bigwedge_{p\in\bar{p}}AR(p,\bot)$, as \[AR(p,\bot)=p\wedge\Box AR(p,\bot)=p\wedge\Box p\wedge \Box AR(p,\bot)=... .\] Actually, we can define $\top_m=\bigwedge_{p\in\bar{p}}AR(p,\bot)$. 
+\begin{proposition}
+    For every $CTL^f$ formula $\psi$, we have either $\top_m\wedge\psi=\bot$, or $\top_m\wedge\psi=\top_m$.
+\end{proposition}
+\begin{proof}
+    We proceed by induction over the structure of $\psi$. Note that due to the structure of $\top_m$, it is sufficient to show the property that for every $p\in\bar{p}$, either $\ARp\wedge\psi=\bot$ or $\ARp\wedge\psi=\ARp$.
+    \begin{itemize}
+        \setlength\itemsep{0em}
+        \item[-] for $\psi = \bot$, this is obvious.
+        \item[-] for $\psi = p\in\bar{p}$, we have $AR(p,\bot)\leq p\wedge\Box AR(p,\bot)\leq p=\psi$, so $\top_m\wedge\psi=\top_m$.
+        \item[-] for $\psi\vee\chi$, let $p\in\bar{p}$; suppose that $\ARp\wedge\psi$ is either equal to $\ARp$ or $\bot$, and same for $\chi$. By unwrapping $\ARp\wedge(\psi\vee\chi)$, the fact that the property holds for $\psi\vee\chi$ is obvious.
+        \item[-] for $\Box\psi$; suppose by induction that the proposition holds for $\psi$. For every $p$ in $\bar{p}$ we have
+            \begin{align*}
+                AR(p,\bot)\wedge\Box\psi&=p\wedge\Box AR(p,\bot)\wedge\Box\psi \\
+                &=p\wedge\Box(AR(p,\bot)\wedge\psi) \\
+                &=\mbox{either }p\wedge \bot \mbox{ or }p\wedge \Box AR(p,\bot)\mbox{ by hypothesis} \\
+                &=\mbox{either }\bot \mbox{ or } AR(p,\bot)
+            \end{align*}
+            which allows us to conclude.
+        \item[-] now for $EU(\psi,\chi)$. Suppose that the property holds for $\psi$ and $\chi$, by induction. Let $p$ in $\bar{p}$. We first show that \[AR(p,\bot)\wedge EU(\psi,\chi)=EU(\psi\wedge AR(p,\bot),\chi\wedge AR(p,\bot))\]
+            First, 
+            \begin{align*}
+                &EU(\psi\wedge AR(p,\bot),\chi\wedge AR(p,\bot))\\
+                &=[\psi\wedge\ARp]\vee[\chi\wedge\ARp\wedge\diamond EU(\psi\wedge AR(p,\bot),\chi\wedge AR(p,\bot))]\\
+                &=\ARp\wedge(\psi\vee[\chi\wedge \diamond EU(\psi\wedge AR(p,\bot),\chi\wedge AR(p,\bot))])\\
+                &\leq\ARp\wedge(\psi\vee[\chi\wedge \diamond EU(\psi,\chi)])\mbox{ by monotonicity}\\
+                &=\ARp\wedge EU(\psi,\chi).
+            \end{align*}
+            On the other hand, we will show that \[EU(\psi,\chi)\leq EU(\psi\wedge\ARp,\chi\wedge\ARp)\vee\neg\ARp.\] 
+            By a least fixpoint argument using definition of $EU(\psi,\chi)$, a sufficient condition is 
+            \begin{multline*}
+                \psi\vee(\chi\wedge\diamond [EU(\psi\wedge\ARp,\chi\wedge\ARp)\vee\neg\ARp])\\
+                \leq EU(\psi\wedge\ARp,\chi\wedge\ARp)\vee\neg\ARp.
+            \end{multline*}
+            Equivalently, by switching back $\ARp$ to the left side and by developing on the left, we only need to prove
+            \begin{multline*}
+                [\ARp\wedge(\psi\vee[\chi\wedge\diamond EU(\psi\wedge\ARp,\chi\wedge\ARp)])]\\
+                \vee[\ARp\wedge\psi]\vee[\chi\wedge\ARp\wedge\diamond\neg\ARp]\\
+                \leq EU(\psi\wedge\ARp,\chi\wedge\ARp)
+            \end{multline*}
+            As the left member simplifies, this is still equivalent to 
+            \begin{multline*}
+                [\ARp\wedge\psi]\vee[\ARp\wedge\chi\wedge\diamond EU(\psi\wedge\ARp,\chi\wedge\ARp)]\\
+                \leq EU(\psi\wedge\ARp,\chi\wedge\ARp)
+            \end{multline*}
+            which is true by definition of $EU$. Therefore, the inequality is proven in both ways, which states our first equality.
+            Now, by induction hypothesis, there are four cases, depending on the values of $AR(p,\bot)\wedge\psi$ and $AR(p,\bot)\wedge\chi$. In each case, it is straightforward to check that $EU(\psi\wedge AR(p,\bot),\chi\wedge AR(p,\bot))$ is either equal to $\bot$, or $AR(p,\bot)$, which concludes the proof for this point.
+        \item[-] Consider $EG(\psi,\chi)$, and suppose that the property holds for some $p$, for both $\psi$ and $\chi$. We first prove that \[\ARp\wedge EG(\psi,\chi)=EG(\psi\wedge\ARp,\chi\wedge\ARp).\] First note that 
+        \begin{align*}
+            &EG(\psi\wedge\ARp,\chi\wedge\ARp)\\
+            &=\psi\wedge\ARp\wedge\diamond EU[\chi\wedge\ARp\wedge EG(\psi\wedge\ARp,\chi\wedge\ARp),\psi\wedge\ARp].
+        \end{align*}
+        Now, by monotonicity we have 
+        \begin{align*}
+            EG(\psi\wedge\ARp,\chi\wedge\ARp)&\leq \ARp\wedge\psi\wedge\diamond EU(\chi\wedge EG(\psi,\chi),\psi)\\
+            &=\ARp\wedge EG(\psi,\chi).
+        \end{align*}
+        For the other way, by a fixpoint argument we only need to prove that \[\ARp\wedge EG(\psi,\chi)\leq \psi\wedge\ARp\wedge \diamond EU[\chi\wedge\ARp\wedge EG(\psi,\chi),\psi\wedge\ARp]\]
+        By what we have proven above about $EU$, what we need to prove is that \[\ARp\wedge EG(\psi,\chi)\leq \psi\wedge\ARp\wedge \diamond (\ARp\wedge EU[\chi\wedge EG(\psi,\chi),\psi]\]
+        Note that for all $a$, $b$, $\diamond(a\wedge b)\geq\Box a\wedge \diamond b$.
+        Therefore
+        \begin{align*}
+            &\psi\wedge\ARp\wedge\diamond (\ARp\wedge EU[\chi\wedge EG(\psi,\chi),\psi])\\
+            &\geq \psi\wedge\ARp\wedge\Box\ARp\wedge\diamond EU[\chi\wedge EG(\psi,\chi),\psi]\\
+            &\geq\psi\wedge\ARp\wedge\diamond EU[\chi\wedge EG(\psi,\chi),\psi]\\
+            &\mbox{(as $\Box\ARp\geq\ARp$)}\\
+            &=\ARp\wedge EG(\psi,\chi).
+        \end{align*}
+        From where the initial equality holds. From there, and using previous facts about $EU$, it becomes obvious that the property holds for $EG(\psi,\chi)$, by distinguishing between all four cases.
+        \item[-] We finally deal with negation; suppose $\ARp\wedge\psi=\bot$ for some variable $p$. This is equivalent to saying $\ARp\leq\neg\psi$, which we restate as $\ARp\wedge\neg\psi=\ARp$. In the case where $\ARp\wedge\psi=\ARp$, we equivalently have $\ARp\leq\psi$, ie. $\ARp\leq\psi\vee\bot$, ie. $\ARp\wedge\neg\psi=\bot$. In any case of the induction hypothesis on $\psi$, we get what we want for $\neg\psi$.
+        \end{itemize}
+\end{proof}
+
+This definition of $\top_m$ is satisfying, and we would like to extend this construction to all literals by defining \[p_m:=\top_m\] \[(\neg p)_m:=AR(\neg p,\bot)\wedge\bigwedge_{q\in\bar{p},q\not=p}AR(q,\bot).\] But here is the problem: while this definition for literals is the most natural from what we could guess, it does not fare well by induction. We cannot define $(\varphi_0\wedge\varphi'_0)_m=\varphi_{0,m}\wedge\varphi'_{0,m}$. Take for instance $\bar{p}=\{p,q\}$, $\varphi_0=p$ and $\varphi'_0=\neg q$: following the previous construction we have \[\varphi_{0,m}\wedge\varphi'_{0,m}=AR(p,\bot)\wedge AR(q,\bot)\wedge AR(\neg q,\bot)=\bot.\]
+Well, in this case we could set \[(p\wedge\neg q)_m = \ARp\wedge AR(\neg q,\bot),\] and define a fitting `minimal formula' for every conjunctive clause of literals. But this does not solve the problem generally, because the logic here is too complex to be able to group all literals in conjunctive clauses like in first order logic. There might be a better way to do this, but I haven't found it yet.
+
+At least, we are able to say which parts of an inductive definition would work, that is, disjunctions:
+\begin{proposition}
+    Given $a_m$ a minimal non-trivial minorant for some $CTL^f$-formula $a$, and $b_m$ one for $b$,
+    \begin{itemize}
+    \item[-] we can define $(a\vee b)_m:=a_m$.
+    \item[-] from that, it follows that we can define also $EU(a,b)_m=AF(a,b)_m := a_m$.
+    \end{itemize}
+\end{proposition}
+\begin{proof}
+    By hypothesis, $\bot< a_m\leq a$; \emph{a fortiori} $a_m\leq a\vee b$. And $a_m\wedge\psi$ is either equal to $\bot$ or $a_m$ by hypothesis. Those two points make $a_m$ a minimal non-trivial minorant for $a\vee b$.
+\end{proof}
+
+\end{document}
