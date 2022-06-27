@@ -19,7 +19,7 @@
 \newcommand{\ARp}{{AR(p,\bot)}}
 
 \bibliographystyle{plain}
-\title{Determining a minimal non-trivial minorant for every consistent $CTL^f$ formula}
+\title{Determining a minimal non-trivial lower bound for every consistent $CTL^f$ formula}
 \author{Anatole Leterrier}
 
 \newtheorem{definition}{Definition}
@@ -31,17 +31,19 @@
 \maketitle
 Our goal here is to construct an ultrafilter $x_0$ which contains $\varphi_0$, if the latter is a consistent $CTL^f$-formula ($\varphi_0\not=\bot$ in some $CTL^f$-algebra $\A$). We know such a $x_0$ exists, but finding it for every $\varphi_0$ seems pretty hard. My first attempts have not been conclusive.
 
+\section*{First attempts}
 What is sure is that a formula $\varphi_{0,m}$ such that $x_0 =$ $\uparrow\varphi_{0,m}$ must be absolutely restrictive on which trees can be accepted as models. Let us precise what this means. 
-\begin{definition}
-    Let $a$ be a consistent $CTL^f$-formula. We say that a formula $a_m$ is a \emph{minimal non-trivial minorant for $a$} if 
+\begin{definition}\label{phi_m}
+    Let $a$ be a consistent $CTL^f$-formula. We say that a formula $a_m$ is a \emph{minimal non-trivial lower bound for $a$} if 
     \begin{enumerate}
         \item $\bot<a_m\leq a$
         \item for every $CTL^f$-formula $\psi$ we have either $\psi\wedge a_m=a_m$, or $\psi\wedge a_m=\bot$.
     \end{enumerate}
+    Equivalently, $a_m$ is an atomic formula beneath $a$.
 \end{definition}
 For every $p$ in $\bar{p}$, for every $n \geq 0$, we should have either $\diamond^np \wedge \varphi_{0,m} = \varphi_{0,m}$, or $\diamond^np \wedge \varphi_{0,m} =\bot$. In other terms, either all models of $\varphi_{0,m}$ contain a $n$-th successor for the root whose coloring contains $p$, either none of them does (we are not yet allowed to switch between semantics and syntactic equations, but this how I guess which results should be true). The same reasoning with $\diamond^n\neg p$ leads us to say that for every $n$, for every $p$ in $\bar{p}$, \[\varphi_{0,m}\vdash\Box^n p\mbox{ or } \varphi_{0,m}\vdash\Box^n\neg p.\]
 One way to restate this is by saying that colorings of models are determined by formula $\varphi_{0,m}$. Thus, we would like to construct this formula from $\varphi_0$ by fixing colorings which are not determined by it. An immediate problem is that formulas in the logic are finite, while trees are infinite. Even with the simplest of consistent formulas, $\varphi_0 = \top$, building $\varphi_{0,m}$ only with boxes is impossible, as there are infinitely many formulas $\bigwedge_{p\in\bar{p}}\bigwedge_{k=0}^n\Box^k p$ which are below $\top$. We need a formula which is below $\bigwedge_{p\in\bar{p}}\bigwedge_{k=0}^n\Box^k p$ for every $n$, and a fitting candidate is $\bigwedge_{p\in\bar{p}}AR(p,\bot)$, as \[AR(p,\bot)=p\wedge\Box AR(p,\bot)=p\wedge\Box p\wedge \Box AR(p,\bot)=... .\] Actually, we can define $\top_m=\bigwedge_{p\in\bar{p}}AR(p,\bot)$. 
-\begin{proposition}
+\begin{proposition}\label{top_m}
     For every $CTL^f$ formula $\psi$, we have either $\top_m\wedge\psi=\bot$, or $\top_m\wedge\psi=\top_m$.
 \end{proposition}
 \begin{proof}
@@ -117,15 +119,19 @@ This definition of $\top_m$ is satisfying, and we would like to extend this cons
 Well, in this case we could set \[(p\wedge\neg q)_m = \ARp\wedge AR(\neg q,\bot),\] and define a fitting `minimal formula' for every conjunctive clause of literals. But this does not solve the problem generally, because the logic here is too complex to be able to group all literals in conjunctive clauses like in first order logic. There might be a better way to do this, but I haven't found it yet.
 
 At least, we are able to say which parts of an inductive definition would work, that is, disjunctions:
-\begin{proposition}
-    Given $a_m$ a minimal non-trivial minorant for some $CTL^f$-formula $a$, and $b_m$ one for $b$,
+\begin{proposition}\label{disj_m}
+    Given $a_m$ a minimal non-trivial lower bound for some $CTL^f$-formula $a$, and $b_m$ one for $b$,
     \begin{itemize}
     \item[-] we can define $(a\vee b)_m:=a_m$.
     \item[-] from that, it follows that we can define also $EU(a,b)_m=AF(a,b)_m := a_m$.
     \end{itemize}
 \end{proposition}
 \begin{proof}
-    By hypothesis, $\bot< a_m\leq a$; \emph{a fortiori} $a_m\leq a\vee b$. And $a_m\wedge\psi$ is either equal to $\bot$ or $a_m$ by hypothesis. Those two points make $a_m$ a minimal non-trivial minorant for $a\vee b$.
+    By hypothesis, $\bot< a_m\leq a$; \emph{a fortiori} $a_m\leq a\vee b$. And $a_m\wedge\psi$ is either equal to $\bot$ or $a_m$ by hypothesis. Those two points make $a_m$ a minimal non-trivial lower bound for $a\vee b$.
 \end{proof}
 
+\section*{Evolving towards automata}
+The approach we have started with is in the right place, but there are several points which need to be precised. First of all, there is no certainty that an atomic lower bound exists for any given $\varphi_0$; my intuition tells me it is the case, but I am far from sure. Moreover, only establishing one such lower bound is not enough for an inductive definition, as we have seen in the case of conjunctions. In that case, it is the set of atomic lower bounds which we are interested in, or at least some large enough portion of it, such that it allows for induction steps. This is where Sam had the idea of automata: the set of words accepted over some automata could be used to represent the set of atomic lower bounds for some formula. Then, the inductive definition would be defined over those automata.
+
+The idea which guided the construction of $\top_m$, semantically, was to fill every node of the accepted trees with a subset of $\bar{p}$. Then, states of the automata could more or less represent depths of the tree, along with a $\bot$ state; while transitions would be denoted by a subset of $\bar{p}$. We would pretty much want the automata to be complete, which would mean that
 \end{document}
