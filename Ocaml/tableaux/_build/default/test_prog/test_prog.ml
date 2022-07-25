@@ -6,8 +6,8 @@ let id x = x
 let test_string_ltl (name:string) (exp_output:string) (input:ltl)=
 ("string_ltl "^name)>::(fun _ -> assert_equal exp_output (string_ltl input) ~printer:id)
 
-let test_is_poised (name:string) (exp_output:bool) (input: ltl list)=
-("is_poised "^name)>::(fun _->assert_equal exp_output (is_poised input) ~printer:string_of_bool)
+let test_static_rule (name:string) (exp_output:ltl_op option) (input: ltl list)=
+("static_rule "^name)>::(fun _->assert_equal exp_output (static_rule input) ~printer:(string_option string_ltl_op))
 
 
 let test_main_op (name:string) (exp_output:ltl_op) (input: ltl)=
@@ -19,8 +19,11 @@ let test_get_rid_Unary (name:string)(exp_output:ltl list)(input_list:ltl list)(i
 let test_get_rid_Binary (name:string)(exp_output:ltl list)(input_list : ltl list)(input_op:ltl_op)(input_bool:bool)=
 ("get_rid_Binary "^name)>::(fun _->assert_equal exp_output (get_rid_Binary input_op input_list input_bool) ~printer:string_ltl_list)
 
-let test_loop_applies (name:string)(exp_output:bool)(input:tableau)=
+let test_loop_applies (name:string)(exp_output:bool)(input:ltl list list)=
 ("loop_applies "^name)>::(fun _->assert_equal exp_output (loop_applies input) ~printer:string_of_bool)
+
+let test_prune_applies (name:string)(exp_output:bool)(input:ltl list list)=
+("prune_applies "^name)>::(fun _->assert_equal exp_output (prune_applies input) ~printer:string_of_bool)
 
 let tests = "Tests" >::: [
   (*tests for string_ltl*)
@@ -28,10 +31,10 @@ let tests = "Tests" >::: [
   test_string_ltl "Neg F (And)" "Neg(F((P)^(Q)))" (Neg(F(And(Prop 'P',Prop 'Q'))));
   test_string_ltl "X Or G" "(X(T))u(G(B))" (Or(X Top,G Bot));
 
-  (*tests for is_poised*)
-  test_is_poised "P and XP" true [Prop 'P';X (Prop 'P')];
-  test_is_poised "Empty" false [];
-  test_is_poised "Contradicted" false [Prop 'P';Prop 'Q';X (Prop 'P');Neg (Prop 'Q')];
+  (*tests for static_rule*)
+  test_static_rule "P and XP" None [Prop 'P';X (Prop 'P')];
+  test_static_rule "Empty" None [];
+  test_static_rule "XF" (Some F_op) [Prop 'P';Prop 'Q';X (Prop 'P');F(X(And(Prop 'P',Prop 'Q')));Neg (Prop 'Q')];
 
   (*tests for main_op*)
   test_main_op "Neg P" Prop_op (Neg (Prop 'P'));
@@ -49,9 +52,12 @@ let tests = "Tests" >::: [
   test_get_rid_Binary "Or case 2" [Prop 'P';Neg(G(And(Prop 'P',Prop 'Q')));G Bot] [Prop 'P';Neg(G(And(Prop 'P',Prop 'Q')));Or(X Top,G Bot)] Or_op true;
 
   (*tests for loop_applies*)
-  test_loop_applies "does not apply" false  (Node [[G(Prop 'P')];[Prop 'P';X(G(Prop('P')))]]);
-  test_loop_applies "does apply" true (Node[[Prop 'P';X(G(Prop('P')))];[G(Prop 'P')];[Prop 'P';X(G(Prop('P')))]]  ); 
+  test_loop_applies "does not apply" false  ([[G(Prop 'P')];[Prop 'P';X(G(Prop('P')))]]);
+  test_loop_applies "does apply" true ([[Prop 'P';X(G(Prop('P')))];[G(Prop 'P')];[Prop 'P';X(G(Prop('P')))]]  ); 
 
+  (*tests for prune_applies*)
+  test_prune_applies "applies" true ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
+  test_prune_applies "does not apply" false ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
 
 
 

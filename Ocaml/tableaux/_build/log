@@ -4,7 +4,7 @@
 # Workspace root: "/home/anatcaramba/Documents/TELECOM, MPRI, etc/3A,
 # MPRI/Stage/Ocaml/tableaux"
 # Auto-detected concurrency: 4
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_d38336_output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_c550bb_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"

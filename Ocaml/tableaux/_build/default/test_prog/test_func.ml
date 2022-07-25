@@ -97,6 +97,12 @@ let string_ltl_op : ltl_op->string = function
 | X_op -> "X_op"
 | NX_op -> "NX_op"
 
+(**Printer for 'a option out of printer for 'a*)
+
+let string_option (printer:'a->string):('a option ->string)=function
+  |None->"None"
+  |Some x ->"Some"^(printer x)
+
 (**Computes negative normal form of phi*)
 let rec nnf (phi:ltl)=
   match phi with
@@ -144,19 +150,17 @@ match l with
 |_->phi::apply_trans l0
 
 
-(**Returns true iff no rule applies to a formula*)
-let is_exhausted :ltl->bool = function
-|Prop _|Neg(Prop _)|X(_)|Neg(X(_))->true
+
+(**Returns Some op if some formula with main operator op can stille be unraveled, None if not*)
+let rec static_rule :ltl list->ltl_op option=function
+  |[]->None
+  |phi::l'->let op = main_op phi in 
+    if op = X_op || op = NX_op || op = Prop_op  then static_rule l' else Some op
+
+(**Returns true iff rule associated with operator is binary*)
+let is_binary_op = function
+| NAnd_op|Or_op| F_op| NG_op->true
 |_->false
-
-
-(**Returns true iff no static rule applies to l*)
-let rec is_poised (l:ltl list):bool=
-if contains_contra l then false else
-  match l with
-  |[]->false
-  |phi::l'->if is_exhausted phi then (if l'=[] then true else is_poised l') else false
-
 
 (**Returns Some k if the list contains a formula with main operator op at index k; None if it does nowhere *)
 let contains_op = 
@@ -166,10 +170,6 @@ let contains_op =
   |phi::l0->if main_op phi=op then Some k else contains_op_0 (k+1) op l0 in
 contains_op_0 0 
 
-
-(*let init_hash_table (l:ltl):int->ltl=
-  let sub_phi = s_plus l in 
-  let indices = List.map *)
 
 (**Takes list where the (0 or 1)-ary rule related to op can be applied, and does so.*)
 let get_rid_Unary (op:ltl_op)(l:ltl list):ltl list=
@@ -207,58 +207,92 @@ let get_rid_Binary (op:ltl_op)(l:ltl list):bool->ltl list=
       |Some k -> get_rid_Binary_0 k l []
   
 
+(**Syntactical shortcut to test whether some element is included in a list*)
+let rec belongs_list (x:'a):'a list->bool=
+  List.exists (fun y->y=x)
+
 (**Returns true iff list l is included in list m sets-wise*)
 let rec is_included (l:'a list) (m:'a list):bool=
     match l with
     |[]->true
-    |phi::l'->List.exists (fun x->x=phi) m && is_included l' m
+    |phi::l'->belongs_list phi m && is_included l' m
 
 (**Returns true iff both lists are equal sets-wise*)    
 let are_equal (l:'a list)(m:'a list):bool = 
   is_included l m && is_included m l
 
 
-
-
 (**  Returns the list of indexes of the proper ancestors of t containing its list sets wise*)
-let poised_ancestors_contain :tableau->int list = 
+let poised_ancestors_contain :ltl list list->int list = 
   let rec poised_ancestors_contain_0 (ll:ltl list list)(l:ltl list)(k:int):int list=
     match ll with
     |[]->[]
-    |m::ll'->(if is_poised m && is_included l m then [k] else [])@(poised_ancestors_contain_0 ll' l (k+1)) in 
+    |m::ll'->(if static_rule m = None && is_included l m then [k] else [])@(poised_ancestors_contain_0 ll' l (k+1)) in 
   function
-  |Node([])->failwith "empty list of ancestors"
-  |Node(l::ll)-> poised_ancestors_contain_0 ll l 1
+  |[]->failwith "empty list of ancestors"
+  |l::ll-> poised_ancestors_contain_0 ll l 1
 
 
-(**Returns true iff all X-eventualities in gamma_u are satisfied in gamma_w*)
-let rec all_X_ev_satisfied (gamma_w:ltl list)(gamma_u:ltl list):bool = 
-  List.for_all(function
-    |X (F psi)->List.exists(fun chi->chi= F psi)gamma_w
-    |X (G psi)->List.exists(fun chi->chi= G psi)gamma_w
-    |Neg(X (F psi))->List.exists(fun chi->chi=Neg (F psi))gamma_w
-    |Neg(X (G psi))->List.exists(fun chi->chi= Neg (G psi))gamma_w
-    |_->true)gamma_u
-   
+(**Returns the list of the X-eventualities in a list, minus the X*)
+let rec all_X_ev :ltl list->ltl list =function
+  |[]->[]
+  |X (F psi)::l'->(F psi) :: (all_X_ev l')
+  |X (G psi)::l'->(G psi) :: (all_X_ev l')
+  |Neg(X (F psi))::l'->(Neg(F psi)) :: (all_X_ev l')
+  |Neg(X (G psi))::l'->(F psi) :: (all_X_ev l')
+  |_::l'->all_X_ev l'
 
 
-(**Returns true iff there exists an ancestor of age 0 to k-1 which satisfies all X-eventualities in the k-th ancestor*)
-let rec exists_all_X_ev_sat (ll:ltl list list)(gamma_u:ltl list)(k:int):bool =
-  if k=0 then false else 
-  match ll with
-  |[]->failwith ""
-  |gamma_w::ll'->all_X_ev_satisfied gamma_w gamma_u || exists_all_X_ev_sat ll' gamma_u (k-1)
+(**Returns the list of ints between i and k-1*)
+let rec range (j:int)(k:int) : int list =
+  if j>=k then [] else
+    (range j(k-1))@[k-1]
 
-let loop_applies (t:tableau):bool=
-  let i = poised_ancestors_contain t in
-    List.exists(fun k->match t with
-      |Node(ll)-> let gamma_u = List.nth ll k in
-        exists_all_X_ev_sat ll gamma_u k) i
+(**Returns true iff the loop rule applies to the tableau*)
+let loop_applies (ll:ltl list list):bool=
+let i = poised_ancestors_contain ll in
+    let current_list = List.hd ll in
+      List.exists(fun k_v -> is_included (List.nth ll k_v)(current_list)&&List.for_all(fun phi->List.exists (fun j->belongs_list phi (List.nth ll j)) (range 1 (k_v+1) ))(all_X_ev (current_list)))i
+
+(**Returns true iff the prune rule applies to the tableau*)
+let prune_applies (ll:ltl list list):bool = 
+  let i = poised_ancestors_contain ll in 
+  let current_list = List.hd ll in
+    List.exists(fun k_v -> are_equal(List.nth ll k_v)(current_list)&&
+    List.exists(fun k_w->k_w>k_v&&are_equal(List.nth ll k_w)(current_list)&& 
+(* there are proper poised ancestors v and w such that the three labels are equal sets-wise and*)
+    List.for_all (fun phi->List.exists (fun k_y->belongs_list phi (List.nth ll k_y))(range 1 (k_v+1))
+      ||not(List.exists (fun k_x->belongs_list phi (List.nth ll k_x))(range (k_v+1) (k_w+1))))
+(*for every X-ev, if the corresponding formula is satisfied before v, it already was between v and w*)
+    (all_X_ev current_list))i )i
+
+(**Returns true iff the prune_0 applies to the tableau*)
+let prune_0_applies (ll:ltl list list):bool = 
+  let i = poised_ancestors_contain ll in 
+  let current_list = List.hd ll in
+    List.exists(fun k_v -> are_equal(List.nth ll k_v)(current_list)&& 
+(* there is proper poised ancestors v that the two labels are equal sets-wise and*)
+    List.for_all (fun phi->not(List.exists (fun k_x->belongs_list phi (List.nth ll k_x))(range 1 (k_v+1))))
+(*no X-ev is satisfied between the two nodes*)
+    (all_X_ev current_list))i
 
 
-
-
-
+let sat (phi:ltl):bool =
+  let rec sat_0 (ll:ltl list list):bool=
+    let current_list = List.hd ll in 
+      if current_list = [] then true else
+      if contains_contra current_list then false else
+      if contains_op Bot_op current_list <>None then false else
+      match static_rule current_list with
+      |Some op-> if is_binary_op op then  true  else true
+        
+      |None->if loop_applies ll then true else
+        if prune_applies ll then false else
+        if prune_0_applies ll then false else (*sat_0 (apply_trans ll)*) true in 
+sat_0[[phi]]
+    
+    
+let valid phi = not(sat(Neg(phi)))
 
 
 
