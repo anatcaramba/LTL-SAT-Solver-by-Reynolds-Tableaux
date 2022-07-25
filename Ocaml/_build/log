@@ -1,0 +1,6 @@
+# dune init project tableaux
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: "/home/anatcaramba/Documents/TELECOM, MPRI, etc/3A,
+# MPRI/Stage/Ocaml"
+# Auto-detected concurrency: 4

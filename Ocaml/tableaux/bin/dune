@@ -1,0 +1,4 @@
+(executable
+ (public_name tableaux)
+ (name main)
+ (libraries tableaux))

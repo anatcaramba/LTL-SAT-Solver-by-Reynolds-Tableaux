@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/tableaux/META"
+  "_build/install/default/lib/tableaux/dune-package"
+  "_build/install/default/lib/tableaux/opam"
+]
+bin: [
+  "_build/install/default/bin/tableaux"
+]

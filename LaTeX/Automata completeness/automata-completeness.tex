@@ -1,0 +1,260 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{a4wide}
+\usepackage[utf8]{inputenc}
+
+\usepackage{setspace}
+\onehalfspacing
+
+\newcommand{\onto}{\twoheadrightarrow}
+\newcommand{\inv}{^{-1}}
+
+
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\F}{\mathbf{F}}
+\newcommand{\G}{\mathbf{G}}
+\newcommand{\I}{\mathbf{I}}
+\newcommand{\cF}{\mathcal{F}}
+\renewcommand{\S}{\mathcal{S}}
+\renewcommand{\phi}{\varphi}
+\title{Completeness via automata}
+\author{S.~v.~Gool and A.~Leterrier (and S.~Ghilardi?)}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\begin{document}
+
+\maketitle
+The aim of this note is to show that generalized Büchi automata can be used for
+proving completeness of an axiomatization of (a fragment of) LTL.
+
+We consider formulas (i.e. terms) in the algebraic signature with constant
+symbols $\I$ and $\bot$, unary symbols $\X$, $\F$ and $\neg$ and a binary symbol
+$\wedge$, and a fixed finite number of variables $p_1, \dots, p_k$. 
+
+The axioms of our theory are the Boolean algebra axioms, together with axioms
+that say $\X$ is an endomorphism, $\X\I = \bot$, $a \neq \bot$ implies $\I \leq
+\F a$, and $\F p$ is the least fixpoint of the function $x \mapsto p \vee \X x$.
+As usual, $a \vee b$ abbreviates $\neg (\neg a \wedge \neg b)$ and $\G a$
+abbreviates $\neg \F \neg a$. We call a model of this theory an \emph{algebra}.
+As always with a theory, when we have an algebra $A$ and an interpretation of
+the variables $p_1, \dots, p_k$ as elements $a_1, \dots, a_k$ of the algebra
+$A$, any formula $\phi$ gets a denotation in $A$, that we denote by $\phi^A(a_1,
+\dots, a_k)$.  A formula $\phi$ is called \emph{consistent} if there exists an
+algebra $A$ and elements $a_1, \dots, a_k$ of $A$ such that $\phi^A(a_1, \dots,
+a_k) \neq \bot$ in $A$.
+
+Note that $\mathcal{P}(\omega)$ is an example of such an algebra, with $\I =
+\{0\}$, $\X$ the predecessor function on sets, and $\F$ the down-set function.
+We denote by $\Sigma$ the finite set $\{0,1\}^k$. A function $w \colon \omega
+\to \Sigma$ is called an \emph{infinite $\Sigma$-word}. An infinite
+$\Sigma$-word defines a \emph{semantics function} $\bar{w}$, because for any $i
+\in \{1, \dots, k\}$ we have a subset $\bar{w}(p_i) := \{t \in \omega \ \colon \
+w(t)(i) = 1\}$, and thus any formula $\phi$ gets a value $\bar{w}(\phi)$ in the
+algebra $\mathcal{P}(\omega)$, by induction on the term  $\phi$. We use the
+common notation $w, t \models \phi$ to mean $t \in \bar{w}(\phi)$. We also write
+$w \models \phi$ to mean $w, 0 \models \phi$. We call a formula $\phi$
+\emph{satisfiable} if there exists an infinite $\Sigma$-word $w$ such that $w
+\models \phi$. Note that satisfiable formulas are consistent, because
+$\mathcal{P}(\omega)$ is an algebra.
+
+We aim to prove the completeness theorem, which says that consistent formulas
+are satisfiable. Let $\phi$ be a consistent formula and $A$ an algebra
+witnessing this fact. 
+
+
+Write $\S(\phi)$ for the finite set of subformulas of $\phi$, and $\S^+(\phi)$
+for the smallest set of formulas containing $\S(\phi)$, each of the variables
+$p_1, \dots, p_k$, and having the property that, for any $\F\psi$ in
+$\S^+(\phi)$, also $\X\F\psi \in \S^+(\phi)$.  Let $B$ the smallest Boolean
+subalgebra of $A$ that contains $\psi^A$ for every $\psi \in \S^+(\phi)$. Notice
+in particular that if $\X \psi \in \S^+(\phi)$ then $\X \neg \psi^A = \neg \X
+\psi^A$ is in $B$. We will henceforth just write $\S^+$ for $\S^+(\phi)$, since
+$\phi$ is fixed.
+
+Note that $B$ is a finite Boolean algebra, so it is isomorphic to
+$\mathcal{P}(Q)$ where $Q$ is the set of atoms of $B$. We therefore use the
+following notational convenience. When $\psi$ is a formula in $\S^+$ and $q$ is
+an atom of $B$, we write ``$q \in \psi$'' as shorthand for ``$q \leq \psi^A$''.
+We define a binary relation $R$ on $Q$ by
+
+\[ q {R} q' \iff \text{ for all } \X \psi \in \S^+, \text{ if } q \in \X \psi
+\text{ then } q' \in \psi.\]
+
+Note that, in fact, if $q {R} q'$, then the following properties also hold:
+\begin{enumerate} 
+\item If $\X \psi \in \S^+$, then if $q' \in \psi$ then $q \in
+	\X \psi$.  
+
+\item If $\F \psi \in \S^+$, then $q \in \F \psi$ iff $q \in \psi$ or $q' \in \F
+\psi$.  
+\end{enumerate} 
+
+The proof is an exercise in using the axioms that hold
+in the algebra $A$. For example, if $q \not\in \X \psi$, then by definition $q
+\nleq \X \psi^A$, so $q \leq \neg \X \psi^A$ since $q$ is an atom. Since $\X$ is
+an endomorphism we have $q \leq \X \neg \psi^A$, and thus $q' \leq \neg \psi^A$
+because $(q,q') \in R$.  The second item is left to the reader and uses the fact
+that $\F \psi = \psi \vee \X \F \psi$ in $A$.
+
+\begin{proof}
+	By construction, since $\F \psi \in \S^+$, $\X\F\psi\in\S^+$.
+	Assume that $q\in\F\psi = \psi\vee\X\F\psi$.
+	By definition, $q \leq\F\psi^A$. As a consequence, either $q\leq\psi^A$, or $q\leq\X\F\psi^A$
+	(as an atom, $q$ cannot be equal to $\F\psi^A$).
+	This implies that $q'\leq\F\psi^A$, which proves our point in one way.
+	For the other way, either $q\leq\psi^A$, in which case $q\leq\F\psi^A$ quite obviously,
+	or $q'\leq\F\psi^A$, which by point 1. actually means that $q\leq\X\F\psi^A$. This allows to conclude.
+
+\end{proof}
+
+We also define a function $\sigma \colon Q \to \Sigma$ by sending $q \in Q$ to
+the vector $\sigma(q) \in \Sigma = \{0,1\}^k$ defined by $\sigma(q)(i) = 1$ iff
+$q \leq a_i$.
+
+A transition relation $\delta \subseteq Q \times \Sigma \times Q$ is now
+defined by $(q, s, q') \in \delta$ iff $(q, q') \in R$ and $\sigma(q) = s$. 
+
+Let $w$ an infinite $\Sigma$-word. A \emph{run} on $w$ is an infinite $Q$-word
+$\rho$ with the property that $(\rho(n), w(n), \rho(n+1)) \in \delta$ for every
+$n \in \omega$. Because of the special definition of $\delta$, note that any run
+$\rho$ can only be a run on the word $w := \sigma \circ \rho$. Thus, whenever
+$\rho$ is an infinite $R$-path, it is a run on $\sigma \rho$, and on no other
+word.
+Also, we call $\rho(0)$
+the \emph{starting point} of $\rho$ and if $\rho(0) = q_0$ then we say $\rho$ is
+a run \emph{from} $q_0$.
+
+Recall that the acceptance requirement of a generalized Büchi automaton is given
+by a set $\cF \subseteq \mathcal{P}(Q)$ of final regions, and  that a run $\rho
+\colon \omega \to Q$ is successful if, for every $F \in \cF$, $\rho^{-1}(F)$ is
+infinite. In our case, we define for every formula $\F \psi$ in $\S^+$ a final
+region $\neg \F \psi \vee \psi$. More formally:
+%
+\[ \cF := \{ \{q \in Q \ \colon \ q \leq (\neg \F \psi \vee \psi)^A \} \ \colon
+\ \F \psi \in \S^+ \}.\]
+%
+We thus obtain a tuple $(Q, \Sigma, \delta, \cF)$ that will form the blueprint
+for our Büchi automata, in the sense that they are always based on this tuple,
+but have varying initial states.
+
+\begin{lemma}\label{lem:automaton-semantics}
+For every $\psi \in \S^+$ and every successful run $\rho$, we have 
+\[ \sigma \rho \models \psi \iff \rho(0) \in \psi.\] 
+\end{lemma}
+%
+\begin{proof}
+By induction on the complexity of $\psi$, proving the slightly stronger
+statement that for any $t \in \omega$, 
+%
+\[ \sigma \rho, t \models \psi \iff \rho(t) \in \psi. \]
+%
+When $\psi$ is a variable $p_i$, the left hand side says $t \in
+\overline{\sigma\rho}(p_i)$ which means by definition that $\sigma\rho(t)(i) =
+1$ and by definition of $\sigma$ this means that $\rho(t) \leq a_i = (p_i)^A$.
+
+The cases $\I$, $\wedge$ and $\neg$ are easy. Also, when $\X \psi \in
+\mathcal{S}^+(\phi)$, we have $\sigma\rho, t \models \X \psi$ iff $\sigma\rho, t
++ 1 \models \psi$, which is equivalent by the induction hypothesis to $\rho(t+1)
+\in \psi$. The definition of $R$ and the first remark following it show that
+this is equivalent to $\rho(t) \in \X \psi$, because $(\rho(t), \rho(t+1)) \in
+R$.
+
+Finally, for the $\F$-case, suppose $\F \psi \in \S^+$. If $\sigma \rho, t
+\models \F \psi$, pick $t' \geq t$ such that $\sigma \rho, t' \models \psi$. By
+induction, this is equivalent to $\rho(t') \in \psi$. We now show with a
+sub-induction on  the non-negative number $\ell := t' - t$ that $\rho(t) \in \F
+\psi$. When $\ell = 0$, $\rho(t) \in \psi$, and $\psi \leq \F\psi$ in $A$, so
+$\rho(t) \in \F\psi$. For the induction step, we have that $\rho(t + 1) \in \F
+\psi$ by the induction hypothesis. Then $\rho(t) \in \X\F\psi$ because
+$(\rho(t), \rho(t+1)) \in R$, so we get $\rho(t) \in \F\psi$ since $\X \F \psi
+\leq \F \psi$.
+
+Conversely, suppose that $\rho(t) \in \F\psi$. We show that there exists $u \geq
+t$ such that $\rho(u) \in \psi$, which will suffice, because then the induction
+hypothesis gives $\sigma\rho, u \models \psi$, so $\sigma\rho, t \models \F
+\psi$ by definition.  Since $\rho$ is a successful run and $\F \psi \in \S^+$,
+pick $t' \geq t$ such that $\rho(t') \in \neg \F \psi \vee \psi$.  If $\rho(t')
+\in \psi$, then we just pick $u := t'$. Otherwise, we have that $\rho(t') \in
+\neg \F \psi$. In particular, $t \neq t'$, and choose $t \leq u < t'$ to be the
+maximal point such that $\rho(u) \in \F \psi$. Then $\rho(u+1) \in \neg \F
+\psi$, and therefore $\rho(u) \in \X \neg \F \psi = \neg \X \F \psi$. Since $\F
+\psi \wedge \neg \X \F \psi \leq \psi$ (by a simple Boolean algebra manipulation
+of the equality $\F \psi = \psi \vee \X \F \psi$), we now get that $\rho(u) \in
+\psi$.  \end{proof}
+
+We now use Lemma~\ref{lem:automaton-semantics} to prove the following.
+\begin{theorem} For any word $w \in \Sigma^\omega$ and $q_0 \in Q$, the
+	following are equivalent: \begin{enumerate} \item The automaton $(Q,
+		\Sigma, \delta, \cF)$ has a successful run on $w$ starting from
+	$q_0$; \item For every $\psi \in \S^+$ such that $q_0 \in \psi$, $w
+\models \psi$.  \end{enumerate} \end{theorem} \begin{proof}
+
+(1) $\Rightarrow$ (2). If the automaton has such a successful run $\rho$
+starting from a state $q_0$, then by the remarks above, we have $w =
+\sigma\rho$, and the right-to-left direction of
+Lemma~\ref{lem:automaton-semantics} gives that if $q_0 \in \psi$ then
+$\sigma\rho \models \psi$. 
+
+(2) $\Rightarrow$ (1). Conversely, suppose that $w \models \psi$ for every $\psi
+\in \S^+$ such that $q_0 \in \psi$.  Define a function $\rho_w \colon \omega \to
+Q$ by: 
+%
+\[ \rho_w(t) := \bigwedge \{ \psi^B \ \colon \ \psi \in \S^+, w, t
+		\models \psi\} \wedge \bigwedge \{ \neg \psi^B \ \colon \ \psi
+	\in \S^+, w, t \not\models \psi\}.\] 
+%
+Notice that each $\rho_w(t)$ is indeed an atom of $B$, as it is exactly
+the meet of the intersection of an ultrafilter with the finite Boolean
+algebra $B$. Also $\rho_w(0) = q_0$ follows from the assumption that $w,
+0 \models \phi$ for all $\psi \in \S^+$ with $q_0 \in \psi$.
+
+The function $\rho_w$ defines a run on $w$: if $\rho_w(t) \in \X \psi$ for some
+$\X \psi \in \S^+$, then this means that $w, t \models \X \psi$, so $w, t + 1
+\models \psi$, and hence $\rho_w(t+1) \in \psi$.  Also, $\sigma\rho_w(t) =
+w(t)$, because the variables occur in $\mathcal{S}^+$.
+
+Finally, the run $\rho_w$ is successful. Indeed, suppose that $\F \psi \in
+\S^+$. We need to show that $\rho_w$ is in the final region $\neg \F \psi \vee
+\psi$ infinitely often. Consider the set \[ T := \{t \in \omega \ \colon \ w, t
+\models \psi\}.\] We distinguish two cases, according to whether $T$ is finite
+or infinite. If $T$ is finite, then pick $t_0$ such that  $w, t \not\models
+\psi$ for all $t \geq t_0$. But then $\rho_w(t_0) \in \neg \F \psi$, so
+$\rho_w(t) \in \neg \F \psi$ for every $t \geq t_0$. If, on the other hand, $T$
+is infinite, then $\rho_w(t) \in \psi$ infinitely often, and we are also done.
+\end{proof}
+
+The above theorem almost proves completeness but not quite. One step is missing;
+the following question needs to be answered:
+
+{\bf Question.} Let $q \in Q$. Does there always exist a successful run starting
+from $q$?
+
+If the answer to this question is positive, then the following argument
+completes the proof. Recall that the algebra $A$ witnesses the consistency of
+$\phi$, and $\phi^A$ is a non-bottom element of $B$, so we can pick an atom $q
+\in Q$ such that $q \leq \phi^A$, i.e., $q \in \phi$. By the positive answer to
+the question, pick a successful run $\rho$ starting from $q$. Then by the
+direction (1) $\Rightarrow$ (2) of the above theorem, we have $w \models \phi$,
+where $w$ is the word $\sigma \rho$.
+
+\subsection*{Existence of a successful run}
+ There are several ways we could attend to prove the existence of a successful run. A first idea is to reason inductively on the number of
+ elements in the terminating condition $\cF$.
+
+ \begin{lemma}
+	 For every $\phi$ such that $\cF$ is empty, there exists a run starting from every atom $q_0 \in B_\phi$. 
+ \end{lemma}
+ \begin{proof}
+	 Since there are no eventuality conditions, the definition of termination only asks that we get an infinite path starting from $q_0$.
+	 In other words, we require that every state $q_0$ has a successor in $A_\phi$. For this, consider the set:
+	 \[D= \uparrow\{\psi\mid q_0\in\X\psi, \X\psi\in B\}\]
+	 D is an proper filter of $B$: it is a non-empty ($\X\top=\top$ so that $\top\in D$) upset not containing $\bot$, as $q_0$ is an atom
+	 and $\X\bot=\bot$;
+	 and if $a_1, a_2$ are elements of $D$, we have $\psi_1\leq a_1, \psi_2\leq a_2$ such that both $\psi_i$ are in $\uparrow q_0$.
+	 The latter being a filter implies that $\psi_1\wedge\psi_2 \in D$ ($\X(\psi_1\wedge\psi_2)$ is in $B$ by virtue of $\X$ being 
+	 an endomorphism.). A fortiori $a_1\wedge a_2 \in D$.
+
+	Therefore there is an atom $q_1$ below $D$. And now $(q_0,q_1)\in R$, quite obviously from definition. This is what we wanted to prove.
+ \end{proof}
+
+\end{document}

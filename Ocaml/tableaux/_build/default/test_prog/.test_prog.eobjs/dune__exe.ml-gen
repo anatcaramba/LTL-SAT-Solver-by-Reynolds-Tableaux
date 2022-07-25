@@ -1,0 +1,6 @@
+(** @canonical Dune__exe.Test_func *)
+module Test_func = Dune__exe__Test_func
+
+
+(** @canonical Dune__exe.Test_prog *)
+module Test_prog = Dune__exe__Test_prog
