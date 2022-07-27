@@ -25,6 +25,9 @@ let test_loop_applies (name:string)(exp_output:bool)(input:ltl list list)=
 let test_prune_applies (name:string)(exp_output:bool)(input:ltl list list)=
 ("prune_applies "^name)>::(fun _->assert_equal exp_output (prune_applies input) ~printer:string_of_bool)
 
+let test_sat (name:string)(exp_output:bool)(input:ltl)=
+("sat "^name)>::(fun _->assert_equal exp_output (sat input) ~printer:string_of_bool)
+
 let tests = "Tests" >::: [
   (*tests for string_ltl*)
   test_string_ltl "Prop" "P" (Prop 'P');
@@ -57,10 +60,12 @@ let tests = "Tests" >::: [
 
   (*tests for prune_applies*)
   test_prune_applies "applies" true ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
-  test_prune_applies "does not apply" false ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));F(Neg(Prop 'P'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
+  test_prune_applies "does not apply" false ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));Neg(Prop 'P')];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
 
-
-
+  (*tests for sat*)
+  test_sat "classical disj" true (And(Prop 'P',Or(Prop 'Q',Neg(Prop 'R')))); 
+  test_sat "G of prop" true (G (Prop 'P'));
+  test_sat "G p and F (not p)" false (And(G(And(Prop 'P',Prop 'Q')),F(Neg(Prop 'P'))));
   ]
 
 let _ = run_test_tt_main tests
