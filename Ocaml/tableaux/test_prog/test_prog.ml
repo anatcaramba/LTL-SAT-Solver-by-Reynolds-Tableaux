@@ -31,8 +31,8 @@ let test_sat (name:string)(exp_output:bool)(input:ltl)=
 let tests = "Tests" >::: [
   (*tests for string_ltl*)
   test_string_ltl "Prop" "P" (Prop 'P');
-  test_string_ltl "Neg F (And)" "Neg(F((P)^(Q)))" (Neg(F(And(Prop 'P',Prop 'Q'))));
-  test_string_ltl "X Or G" "(X(T))u(G(B))" (Or(X Top,G Bot));
+  test_string_ltl "Neg F (And)" "Neg F(P ^ Q)" (Neg(F(And(Prop 'P',Prop 'Q'))));
+  test_string_ltl "X Or G" "X T u G B" (Or(X Top,G Bot));
 
   (*tests for static_rule*)
   test_static_rule "P and XP" None [Prop 'P';X (Prop 'P')];
@@ -66,6 +66,14 @@ let tests = "Tests" >::: [
   test_sat "classical disj" true (And(Prop 'P',Or(Prop 'Q',Neg(Prop 'R')))); 
   test_sat "G of prop" true (G (Prop 'P'));
   test_sat "G p and F (not p)" false (And(G(And(Prop 'P',Prop 'Q')),F(Neg(Prop 'P'))));
+  test_sat "alternating P and not P" true (And(
+    And(G(Or(Neg(Prop 'P'),X(Neg(Prop 'P')))),
+    G(Or(Neg(Neg(Prop 'P')),X(Prop 'P')))),Prop 'P'));
+  
+  test_sat "alternating with late contradiction" false (And(
+    And(G(Or(Neg(Prop 'P'),X(Neg(Prop 'P')))),
+    G(Or(Neg(Neg(Prop 'P')),X(Prop 'P')))),And(Prop 'P',X(X(X(X(X(X(X(X(X(X(X(X(X(Prop 'P'))))))))))))))));
   ]
 
 let _ = run_test_tt_main tests
+
