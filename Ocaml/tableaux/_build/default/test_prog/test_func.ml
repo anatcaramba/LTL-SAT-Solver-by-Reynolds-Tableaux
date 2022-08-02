@@ -33,7 +33,7 @@ type ltl_op =
 
 (**Computes main operator of any ltl formula, following structure of static rules*)
 let main_op :ltl->ltl_op=function
-|Prop c|Neg (Prop c)->Prop_op
+|Prop _|Neg (Prop _)->Prop_op
 |Top->Top_op
 |Neg(Top)->NTop_op
 |Bot->Bot_op
@@ -92,7 +92,7 @@ let printer_to_list (printer:'a->string)=
   list_string
 
 (**Printer for ltl lists*)
-let rec string_ltl_list = printer_to_list string_ltl
+let string_ltl_list = printer_to_list string_ltl
 
 
 (**Turns a ltl_op into a printable string*)
@@ -222,7 +222,7 @@ let get_rid_Binary (op:ltl_op)(l:ltl list):bool->ltl list=
   
 
 (**Syntactical shortcut to test whether some element is included in a list*)
-let rec belongs_list (x:'a):'a list->bool=
+let belongs_list (x:'a):'a list->bool=
   List.exists (fun y->y=x)
 
 (**Returns true iff list l is included in list m sets-wise*)
@@ -248,13 +248,13 @@ let poised_ancestors_contain :ltl list list->int list =
 
 
 (**Returns true iff there is an X-eventuality in the list*)
-let rec contains_X_ev :ltl list->bool=
+let contains_X_ev :ltl list->bool=
   List.exists(fun phi -> match phi with 
   |X(F _)|X (G _)|Neg(X (F _))|Neg(X (G _))->true
   |_->false)
 
 (**Returns the list of phi for all X F phi in the list*)
-let rec f_X_ev (l:ltl list):ltl list=
+let f_X_ev (l:ltl list):ltl list=
   let xf_ev = List.filter(fun phi -> match phi with 
   |X(F _)->true
   |_->false) l in 
