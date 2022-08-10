@@ -8,3 +8,10 @@
 *.pdf
 *.synctex.gz
 *.exe
+*.odt
+*.bcf
+*.ent
+*.idx
+*.ilg
+*.ind
+*.json

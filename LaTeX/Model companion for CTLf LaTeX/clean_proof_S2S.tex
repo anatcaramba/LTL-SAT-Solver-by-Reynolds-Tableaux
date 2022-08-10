@@ -12,8 +12,8 @@
 \usepackage{tikz}
 \nocite{*}
 
-\newcommand{\A}{{\mathbb A}}
-\newcommand{\Evp}{{Ev(\bar{p})}}
+\newcommand{\A}{{\mathbb~A}}
+\newcommand{\Evp}{{Ev (\bar{p})}}
 \usepackage[a4paper, total={6in, 9in}]{geometry}
 
 \bibliographystyle{plain}
@@ -28,19 +28,19 @@
 \begin{document}
 \maketitle
 
-This is nothing more than another version of the 2016 paper by Ghilardi and van Gool. Since the proofs in \cite{GhivG16} are mostly developed in the appendix, rewriting them completely in a more readable way is a quite useful exercise. Doing so, my goal is to understand deeply how the constructions work, in order to produce my own version for finite trees with counters by the end of my internship. If I explicit some point more than it was in the original paper, or if I change the order of a few definitions, it is because my understanding benefits from it. Conversely, if I move quickly on a topic, it is because it is already clear in my head.
+This is nothing more than another version of the 2016 paper by Ghilardi and van Gool. Since the proofs in~\cite{GhivG16} are mostly developed in the appendix, rewriting them completely in a more readable way is a quite useful exercise. Doing so, my goal is to understand deeply how the constructions work, in order to produce my own version for finite trees with counters by the end of my internship. If I explicit some point more than it was in the original paper, or if I change the order of a few definitions, it is because my understanding benefits from it. Conversely, if I move quickly on a topic, it is because it is already clear in my head.
 \section{Syntax and Semantics of fair CTL}\label{sec:synt_sem}
 
-Fair CTL, which is an extension of the well-known computational tree logic, is defined intuitively so it can simulate the termination condition for executions of tree automata. For example, the definition of $EG$ is close to what we expect for a fair execution, ie. a branch on which a formula is true infinitely often (or a final state visited infinitely often). 
+Fair CTL, which is an extension of the well-known computational tree logic, is defined intuitively so it can simulate the termination condition for executions of tree automata. For example, the definition of $EG$ is close to what we expect for a fair execution, ie.\ a branch on which a formula is true infinitely often (or a final state visited infinitely often). 
 
 We will define a \emph{syntax} for the logic $CTL^{f}$, which will allow to interpret formulas as elements of a particular type of Boolean algebra, and to use results on duality for those algebras. 
 
-On the other hand, we will define \emph{semantics}, which will allow to interpret such formulas on models, ie. trees whose nodes are labeled by sets of propositional variables supposed to hold on each node. Next section will then be dedicated to prove that these semantics are \emph{complete} with respect to the syntax, in other words, that for every formula $\varphi$ that holds in every model, we can syntactically deduce that $\varphi$ is equivalent to the $\top$ formula of the logic.
+On the other hand, we will define \emph{semantics}, which will allow to interpret such formulas on models, ie.\ trees whose nodes are labeled by sets of propositional variables supposed to hold on each node. Next section will then be dedicated to prove that these semantics are \emph{complete} with respect to the syntax, in other words, that for every formula $\varphi$ that holds in every model, we can syntactically deduce that $\varphi$ is equivalent to the $\top$ formula of the logic.
 
 \subsection*{Syntax of fair CTL}\label{subsec:syntax_CTLf}
 
 \begin{definition}\label{CTLf_formulas}
-    Let $\bar{p}= \{p_1,...,p_n \}$ be a finite set of propositional variables. We define inductively a \emph{$CTL^{f}$-formula} $\varphi$ to be of the shape:
+    Let $\bar{p}= \{p_1,\ldots,p_n \}$ be a finite set of propositional variables. We define inductively a \emph{$CTL^{f}$-formula} $\varphi$ to be of the shape:
     \begin{itemize}
         \setlength\itemsep{0em}
         \item[-] $\bot$
@@ -96,7 +96,7 @@ Also, the way EU and EG formulas are defined reminds the fixpoint operators of t
 
 \subsection*{Semantics of fair CTL}\label{subsec:sem_CTLf}
 \begin{definition}\label{forcing_rel_CTLf}
-    We first define the notion of \emph{transition system}, ie. a pair $(S,R)$, where $S$ is a set, and $R$ a binary relation on $S$. Then, a \emph{$R$-path} is a (possibly infinite) sequence of nodes in $S$ such that $s_i R s_{i+1}$ for all $i$. Finally, for a finite set $\bar{p}$ of variables, define a \emph{$\bar{p}$-coloring} $\sigma : S \to \mathcal{P}(\bar{p})$.
+    We first define the notion of \emph{transition system}, ie.\ a pair $(S,R)$, where $S$ is a set, and $R$ a binary relation on $S$. Then, a \emph{$R$-path} is a (possibly infinite) sequence of nodes in $S$ such that $s_i R s_{i+1}$ for all $i$. Finally, for a finite set $\bar{p}$ of variables, define a \emph{$\bar{p}$-coloring} $\sigma : S \to \mathcal{P}(\bar{p})$.
 
     We can define the forcing relation $\models$ between nodes in $S$ and formulas $\varphi$ with variables in $\bar{p}$, by induction on $\varphi$:
     \begin{itemize}
@@ -106,18 +106,18 @@ Also, the way EU and EG formulas are defined reminds the fixpoint operators of t
         \item[-] $s \models \neg\varphi$ if not $s \models \varphi$;
         \item[-] $s \models \varphi \vee \psi$ if $s\models \varphi$ or if $s\models \psi$;
         \item[-] $s\models \diamond\varphi$ if there exists $s'$ such that $sRs'$ and $s'\models \varphi$;
-        \item[-] $s\models EU(\varphi,\psi)$ if there exists $n\geq 0$ and a path $s_0Rs_1R...Rs_n$ ($s_0=s$) such that $s_k\models\psi$ for every $k<n$ and $s_n\models\varphi$;
-        \item[-] $s\models EG(\varphi,\psi)$ if there exists an infinite path $s_0Rs_1R...$ ($s_0=s$) such that $s_k\models\varphi$ for every $k$ and $s_j\models\psi$ infinitely often on the path.       
+        \item[-] $s\models EU(\varphi,\psi)$ if there exists $n\geq 0$ and a path $s_0Rs_1R\ldots Rs_n$ ($s_0=s$) such that $s_k\models\psi$ for every $k<n$ and $s_n\models\varphi$;
+        \item[-] $s\models EG(\varphi,\psi)$ if there exists an infinite path $s_0Rs_1R\ldots $ ($s_0=s$) such that $s_k\models\varphi$ for every $k$ and $s_j\models\psi$ infinitely often on the path.       
     \end{itemize}
 
 \end{definition}
 
 Remark that as a consequence, $s\models\Box\varphi$ if and only if for every successor $s'$ of $s$ by $R$, $s'\models\varphi$ holds.
-Also, $s\models AR(\varphi,\psi)$ if and only if for every $n\geq 0$ and every path $s=s_0Rs_1R...Rs_n$, either $s_k\models\psi$ for some $k<n$, or $s_n\models\varphi$.
+Also, $s\models AR(\varphi,\psi)$ if and only if for every $n\geq 0$ and every path $s=s_0Rs_1R\ldots Rs_n$, either $s_k\models\psi$ for some $k<n$, or $s_n\models\varphi$.
 
-Similarly, $s\models AF(\varphi,\psi)$ if and only if for all infinite paths $(s)_k$ starting from $s_0$, if $s_j\not\models\psi$ infinitely often, then $s_k\models\varphi$ for some $k$.
+Similarly, $s\models AF(\varphi,\psi)$ if and only if for all infinite paths ${(s)}_k$ starting from $s_0$, if $s_j\not\models\psi$ infinitely often, then $s_k\models\varphi$ for some $k$.
 
-Also, as a convention, we will consider the transition systems to be \emph{serial}, ie. that every node has a successor. Syntactically, this is represented by the axiom $\diamond\top = \top$.
+Also, as a convention, we will consider the transition systems to be \emph{serial}, ie.\ that every node has a successor. Syntactically, this is represented by the axiom $\diamond\top = \top$.
 
 Now, in order to prove completeness, we introduce the notion of \emph{complex algebra} of a transition system. This can be seen as a canonical algebra for the semantics of our logic. Then, we will be able to say that a formula holds semantically if, and only if, it can be derived in the complex algebra.
 
@@ -142,12 +142,12 @@ Now, in order to prove completeness, we introduce the notion of \emph{complex al
         \item[$\subseteq$] We will show that $D(a,b) := \bigcup_{i=1}^{\infty}D_n(a,b)$ is a pre-fixpoint of $x \mapsto a \cup (b \cap \diamond x)$. From the definition of $EU$ the inclusion will directly follow.\\ Let $s\in a \cup (b \cap \diamond D(a,b))$. Note that $D_1(a,b)=a$ so if $s\in a$ it is in $D(a,b)$. And if $s\in (b \cap \diamond D_k(a,b))$ for some $k$ ($\diamond$ preserves countable unions), it is in $D_{k+1}(a,b)$ by definition. We can conclude here.
     \end{itemize}
 \end{proof}
-Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,...s_n, s=s_0Rs_1R...Rs_n, s_k\in a \mbox{ for all } k<n \mbox{, and } s_n \in b\}\]
+Note that $D_n(a,b)$ is the set: \[\{s\in S\mid \exists s_1,\ldots s_n, s=s_0Rs_1R\ldots Rs_n, s_k\in a \mbox{ for all } k<n \mbox{, and } s_n \in b\}\]
 We can now state the corresponding lemma for $EG$:
 \begin{lemma}\label{EG_as_set}
     For every $a,b$ in $\mathbb{P}_{(S,R)}$ it holds that $EG_R(a,b)$ is the set:
 \begin{multline*}
-    \{s\in S\mid \mbox{there exists an infinite path } s=s_0Rs_1R...\\
+    \{s\in S\mid \mbox{there exists an infinite path } s=s_0Rs_1R\ldots\\
     \mbox{ such that }\forall k\in \mathbb{N} \mbox{ } s_k\in a\mbox{, and } s_{j}\in b \mbox{ for infinitely many } j \in\mathbb{N}\}
 \end{multline*}
 \end{lemma}
@@ -158,14 +158,14 @@ We can now state the corresponding lemma for $EG$:
     \end{itemize}
 \end{proof}
 
-Operator $EU$ is \emph{constructive} (see \cite{Santo08}), because it can be described using pre-existing operators of the syntax; whereas the concept of `infinite path' introduced by operator $EG$ cannot be reduced to anything else, so $EG$ is not constructive. In particular, we do \emph{not} have the equality : \[EG_R(a,b)=\bigcap_{i=1}^\infty D'_n(a,b)\] where
+Operator $EU$ is \emph{constructive} (see~\cite{Santo08}), because it can be described using pre-existing operators of the syntax; whereas the concept of `infinite path' introduced by operator $EG$ cannot be reduced to anything else, so $EG$ is not constructive. In particular, we do \emph{not} have the equality: \[EG_R(a,b)=\bigcap_{i=1}^\infty D'_n(a,b)\] where
 \begin{equation*}
     \begin{cases}
         D'_0(a,b)=\mathcal{P}(S)\\
         D'_{n+1}(a,b)=a\cap\diamond_R EU_R(b\cap D'_n(a,b),a)
     \end{cases}
 \end{equation*}
-Although the analogy is pretty clear (the sets are defined as an sequence induced by the `fixpoint function' of the operator), it doesn't work because it fails to grasp infinite paths. For example, we can construct a tree belonging to every $D'_n(a,b)$ (for every $n$ there is a finite path where every node is in $a$, and $b$ contains at least $n$ nodes), but such that no infinite path has the wanted property (of belonging to the set described in \ref{EG_as_set}). Informally, the following infinite binary tree:
+Although the analogy is pretty clear (the sets are defined as an sequence induced by the `fixpoint function' of the operator), it doesn't work because it fails to grasp infinite paths. For example, we can construct a tree belonging to every $D'_n(a,b)$ (for every $n$ there is a finite path where every node is in $a$, and $b$ contains at least $n$ nodes), but such that no infinite path has the wanted property (of belonging to the set described in~\ref{EG_as_set}). Informally, the following infinite binary tree:
 
 \begin{center} 
 \begin{tikzpicture}
@@ -203,7 +203,7 @@ is in every $D'_n(\mathcal{P}(S),b)$ but not in $EG_R(\mathcal{P}(S),b)$.
 \begin{proof}
     First, we show there is a bijection between $\bar{p}$-colorings $\sigma:S \to \mathcal{P}(\bar{p})$ and valuations $V:\bar{p}\to \mathcal{P}(S)$. Given $\sigma$, define $V_\sigma: p\mapsto\{s\in S \mid p\in \sigma(s)\}$. And conversely, given $V$, we can define $\sigma_V: v\mapsto\{p\in\bar{p}\mid v\in V(p)\}$.
 
-    Second, we show the equivalence, by induction on the structure of $\varphi$ Looking at the definitions, it should be obvious for all cases up to diamond; as for $EU$ and $EG$, the wanted equivalence is a consequence of lemmas \ref{EU_as_union} and \ref{EG_as_set}.
+    Second, we show the equivalence, by induction on the structure of $\varphi$ Looking at the definitions, it should be obvious for all cases up to diamond; as for $EU$ and $EG$, the wanted equivalence is a consequence of lemmas~\ref{EU_as_union} and~\ref{EG_as_set}.
 \end{proof}
 \section{Completeness proof}\label{sec:compl}    
 
