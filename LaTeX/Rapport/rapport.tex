@@ -211,7 +211,7 @@ It consists of operators such as AX (`all successors verify\ldots') and EG
 \CTLf~was introduced, allowing to add fairness constraints on branches; Let us define precisely
 what it means.
 
-\subsection*{Syntax of fair CTL}\label{subsec:syntax_CTLf}
+\subsubsection*{Syntax of fair CTL}\label{subsec:syntax_CTLf}
 
 \begin{definition}\label{CTLf_formulas}
     Let $\bar{p}= \{p_1,\ldots,p_n \}$ be a finite set of propositional variables. We define inductively 
@@ -269,7 +269,7 @@ Also, the way EU and EG formulas are defined reminds the fixpoint operators of t
     Finally, we say $\varphi$ \emph{entails} $\psi$ if $\neg \varphi \vee \psi$ is a tautology, which we will note $\varphi \vdash \psi$ or $\varphi \leq \psi$.
 \end{definition}
 
-\subsection*{Semantics of fair CTL}\label{subsec:sem_CTLf}
+\subsubsection*{Semantics of fair CTL}\label{subsec:sem_CTLf}
 \begin{definition}\label{forcing_rel_CTLf}
     We first define the notion of \emph{transition system}, ie.\ a pair $(S,R)$, where $S$ is a set, and $R$ a binary relation on $S$. Then, a \emph{$R$-path} is a (possibly infinite) sequence of nodes in $S$ such that $s_i R s_{i+1}$ for all $i$. Finally, for a finite set $\bar{p}$ of variables, define a \emph{$\bar{p}$-coloring} $\sigma : S \to \mathcal{P}(\bar{p})$.
 
@@ -297,6 +297,17 @@ Also, as a convention, we will consider the transition systems to be \emph{seria
 \section{Satisfiability of LTL: a comparative analysis}
 
 \section{Reynolds' SAT Solver for LTL: an implementation}
+\subsection*{Reynolds' tableaux algorithm for LTL}
+- Why this algo?
+
+- Description of the algo
+\subsection*{An implementation in Ocaml}
+- Why Ocaml?
+
+- Describe my program: how it works (main fct)
+
+- How it computes models (remains to be done)
+
 
 \section{Towards a constructive proof for completeness of fair CTL}
 
