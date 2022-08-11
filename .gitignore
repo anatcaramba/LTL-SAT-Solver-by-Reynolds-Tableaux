@@ -17,3 +17,4 @@
 *.json
 Coq FRAP
 Ocaml/tableaux/_build
+Ocaml/_build
