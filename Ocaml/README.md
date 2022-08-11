@@ -1,6 +1,6 @@
 # An OCaml tableau solver for LTL
 
-This program is an implementation of [Reynolds](https://...). It takes as input an LTL formula and outputs SAT and a Kripke model if the formula is satisfiable an UNSAT otherwise.
+This program is an implementation of [Reynolds](https://arxiv.org/abs/1604.03962). It takes as input an LTL formula and outputs SAT and a Kripke model if the formula is satisfiable an UNSAT otherwise.
 
 # Usage
 

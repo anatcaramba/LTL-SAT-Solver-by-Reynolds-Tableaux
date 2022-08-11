@@ -70,9 +70,21 @@ let tests = "Tests" >::: [
     And(G(Or(Neg(Prop 'P'),X(Neg(Prop 'P')))),
     G(Or(Neg(Neg(Prop 'P')),X(Prop 'P')))),Prop 'P'));
   
-  test_sat "alternating with late contradiction" false (And(
-    And(G(Or(Neg(Prop 'P'),X(Neg(Prop 'P')))),
-    G(Or(Neg(Neg(Prop 'P')),X(Prop 'P')))),And(Prop 'P',X(X(X(X(X(X(X(X(X(X(X(X(X(Prop 'P'))))))))))))))));
+  (*test_sat "exponential case" false (And(
+    Neg(Prop 'p'),And(
+      X(Neg(Prop 'p')),And(
+        X(X(Neg(Prop 'p'))),And(
+          X(X(X(Neg(Prop 'p')))),And(
+            X(X(X(X(Neg(Prop 'p'))))),And(
+              X(X(X(X(X(Neg(Prop 'p')))))),And(
+                X(X(X(X(X(X(Neg(Prop 'p'))))))),And(
+                  X(X(X(X(X(X(X(Neg(Prop 'p')))))))),And(
+                    X(X(X(X(X(X(X(X(Neg(Prop 'p'))))))))),And(
+                      X(X(X(X(X(X(X(X(X(Neg(Prop 'p')))))))))),And(
+                        X(X(X(X(X(X(X(X(X(X(Neg(Prop 'p')))))))))))
+                      )
+                    )
+                  )))))))));*)
   ]
 
 let _ = run_test_tt_main tests
