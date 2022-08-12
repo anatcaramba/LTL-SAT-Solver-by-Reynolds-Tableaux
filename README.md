@@ -14,11 +14,16 @@ Unary operators for Negation, Next, Finally, Globally: `Neg(phi)`, `X(phi)`, `F(
 
 # Usage
 
-To compile the program, execute the command
+To compile the program, go into repository "tableaux":
+
+`cd tableaux`
+
+and execute the command:
 
 `dune build`
 
 on a shell.
+
 
 To run the program on a formula of your choice, run the toplevel (command `ocaml`). Then type:
 ` #use "./tableaux/test_prog/func.ml";; `
@@ -26,15 +31,7 @@ To run the program on a formula of your choice, run the toplevel (command `ocaml
 You can now apply function "sat" on any LTL formula by typing:
 ` let _ = sat(phi) ;; `
 
-There are several tests in the subfolder;
-To execute all the tests, run the command
 
-`dune exec `
-
-# Features
-
-The solver supports LTL formulas of the following format:
-...
 
 Since the procedure is complete (for a proof, see for example [this report](./report.pdf)), the solver will always give an output. 
 
@@ -42,6 +39,12 @@ We have not yet made time performance optimizations.
 
 # Tests
 
-We have created a sequence of formulas that exhibits the worst-case performance of the solver. Since the procedure is PSPACE-complete (add reference?), ...
+There are several tests in the subfolder, many of which were written during programming to ensure that the functions in "func.ml" were well written.
+
+To execute all the tests, run the command
+
+`dune exec tableaux/test_prog.exe`
+
+We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test. The formula in the test case only has 5 nested operators, however we have tested up to 13 nestings, by recursively taking the disjunction of twice the formula with n-1 nestings. Since the procedure is PSPACE-complete (add reference?), we would expect an exponential time in functions of the number of nestings in the worst case, which is what we seem to get. This is normal, as adding a nesting doubles the number of leaves. A table and a graph in the report mentioned earlier bring further evidence of this fact.
 
 
