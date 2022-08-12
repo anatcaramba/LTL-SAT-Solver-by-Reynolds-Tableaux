@@ -9,6 +9,7 @@
 \usepackage{latexsym}
 \usepackage{amsfonts}
 \usepackage{bussproofs}
+\usepackage{listings}
 \usepackage{tikz}
 \nocite{*}
 
@@ -25,6 +26,22 @@
 \usepackage[a4paper, total={6in, 9in}]{geometry}
 
 \bibliographystyle{plain}
+\lstset{frame=tb,
+  language=ML,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 
 \title{MPRI Internship Report}
@@ -298,8 +315,60 @@ Also, as a convention, we will consider the transition systems to be \emph{seria
 - Description of the algo
 \subsection{An implementation in Ocaml}
 \subsubsection*{Why Ocaml?}
+The choice of a functional programming language was guided by the close relationship
+between inductive definition of the formulas and the pattern matching feature.
+Throughout the program, functions make use of matching, let it be to discriminate
+what we call `eventuality formulas' from others, or to construct a printer
+for LTL formulas, delving into the possible imbrications of operators to construct
+a readable string.
 
-- Describe my program: how it works (main fct)
+Recursivity has proven to be a great feature to program the tableaux algorithm. 
+As we will get into, the recursive structure of the satisfiability function,
+constructed as a tree, is efficient. It also makes use of the way logical disjunction
+is evaluated in Ocaml: we want to algorithm to stop as soon as a branch is validated,
+not looking at the unfinished ones. This is exactly what disjunction does in Ocaml.
+
+Functional programming also comes with its setbacks. A quite unoptimized section of 
+the program is loop checking (LOOP and PRUNE rules). We need to check a condition on 
+elements in the list between two indexes. Unlike in an imperative language, accessing
+a specific element in a list is not immediate. Another issue arises with the Loop 
+rule. As objects 
+are immutable, we could not find an efficient way to compute a model when a branch is
+validated thanks to LOOP. Therefore, we tell the user to loop on the last valuations,
+which does not say how many of the last states loop.  
+    
+\subsubsection*{How the program works}
+
+Most of the program uses the newly defined `ltl' type, which is based on the inductive 
+definition of LTL formulas we have given, and will allow to apply recursion nicely.
+Note again that we do not use operator Until.
+\begin{lstlisting}
+type ltl =
+| Prop of char
+| Top
+| Bot
+| Neg of ltl
+| And of ltl * ltl
+| Or of ltl * ltl
+| F of ltl
+| G of ltl
+| X of ltl
+\end{lstlisting}
+
+Type `ltl$\_$op' is an additional tool to characterize an LTL function by its main operator.
+The program contains a handful of useful functions such as `contains$\_$contra', `belongs$\_$list'
+or `are$\_$equal', which often are not much more than tools made out of the original librairies
+of Ocaml (List, mainly).
+
+Main function `sat' is given in the appendix; it has no innovative feature, and mostly
+follows 
+the structure of Reynolds' algorithm (\cite{ReyLTL}). In addition to that, it prints 
+the unravelling of the tree, namely: specify which formulas are to be satisfied 
+in each node, tell when there is branching, when a branch is discarded or validated and why.
+We tried to give the main information while keeping the output readable.
+
+The most though-out functions in the program are those designed to test `dynamic'
+termination rules: LOOP, PRUNE and PRUNE$\_$0.
 
 - How it computes models (remains to be done)
 
