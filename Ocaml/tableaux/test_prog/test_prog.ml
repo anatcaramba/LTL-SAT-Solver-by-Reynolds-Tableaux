@@ -1,5 +1,5 @@
 open OUnit2
-open Test_func 
+open Func 
   
 let id x = x
 
@@ -63,28 +63,17 @@ let tests = "Tests" >::: [
   test_prune_applies "does not apply" false ([[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'))];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))];[G(And(Prop 'P',Prop 'Q'));Neg(Prop 'P')];[Prop 'P';Prop 'Q';X(G(And(Prop 'P',Prop 'Q')));X(F(Neg(Prop 'P')))]]);
 
   (*tests for sat*)
-  test_sat "classical disj" true (And(Prop 'P',Or(Prop 'Q',Neg(Prop 'R')))); 
+  test_sat "classical disj" true (And(Prop 'P',Or(X(Prop 'Q'),Neg(Prop 'R')))); 
   test_sat "G of prop" true (G (Prop 'P'));
   test_sat "G p and F (not p)" false (And(G(And(Prop 'P',Prop 'Q')),F(Neg(Prop 'P'))));
   test_sat "alternating P and not P" true (And(
     And(G(Or(Neg(Prop 'P'),X(Neg(Prop 'P')))),
     G(Or(Neg(Neg(Prop 'P')),X(Prop 'P')))),Prop 'P'));
   
-  (*test_sat "exponential case" false (And(
-    Neg(Prop 'p'),And(
-      X(Neg(Prop 'p')),And(
-        X(X(Neg(Prop 'p'))),And(
-          X(X(X(Neg(Prop 'p')))),And(
-            X(X(X(X(Neg(Prop 'p'))))),And(
-              X(X(X(X(X(Neg(Prop 'p')))))),And(
-                X(X(X(X(X(X(Neg(Prop 'p'))))))),And(
-                  X(X(X(X(X(X(X(Neg(Prop 'p')))))))),And(
-                    X(X(X(X(X(X(X(X(Neg(Prop 'p'))))))))),And(
-                      X(X(X(X(X(X(X(X(X(Neg(Prop 'p')))))))))),And(
-                        X(X(X(X(X(X(X(X(X(X(Neg(Prop 'p')))))))))))
-                      )
-                    )
-                  )))))))));*)
+  test_sat "exponential case" false (Or(
+    Or(Or(Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p')))),Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))))),Or(Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p')))),Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p')))))),
+    Or(Or(Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p')))),Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))))),Or(Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p')))),Or(Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))),Or(And(F(Neg(Prop 'p')),G(Prop 'p')),And(F(Neg(Prop 'p')),G(Prop 'p'))))))
+  ));
   ]
 
 let _ = run_test_tt_main tests
