@@ -61,18 +61,18 @@ match phi with
   |_->"Neg "^(string_ltl psi))
 |And (psi1,psi2)-> (match main_op psi1 with
   |Or_op->(match main_op psi2 with
-    |Or_op->("("^((string_ltl psi1) ^ ")^(")) ^(string_ltl psi2^")")
-    |_->("("^((string_ltl psi1) ^ ")^ ")) ^(string_ltl psi2))
+    |Or_op->("("^((string_ltl psi1) ^ ")&(")) ^(string_ltl psi2^")")
+    |_->("("^((string_ltl psi1) ^ ")& ")) ^(string_ltl psi2))
   |_->(match main_op psi2 with
-    |Or_op->((string_ltl psi1) ^ " ^(") ^(string_ltl psi2^")")
-    |_->((string_ltl psi1) ^ " ^ ") ^(string_ltl psi2)))
+    |Or_op->((string_ltl psi1) ^ " &(") ^(string_ltl psi2^")")
+    |_->((string_ltl psi1) ^ " & ") ^(string_ltl psi2)))
 |Or (psi1,psi2)->(match main_op psi1 with
   |And_op->(match main_op psi2 with
-    |And_op->("("^((string_ltl psi1) ^ ")u(")) ^(string_ltl psi2^")")
-    |_->("("^((string_ltl psi1) ^ ")u ")) ^(string_ltl psi2))
+    |And_op->("("^((string_ltl psi1) ^ ")|(")) ^(string_ltl psi2^")")
+    |_->("("^((string_ltl psi1) ^ ")| ")) ^(string_ltl psi2))
   |_->(match main_op psi2 with
-    |And_op->((string_ltl psi1) ^ " u(") ^(string_ltl psi2^")")
-    |_->((string_ltl psi1) ^ " u ") ^(string_ltl psi2)))
+    |And_op->((string_ltl psi1) ^ " |(") ^(string_ltl psi2^")")
+    |_->((string_ltl psi1) ^ " | ") ^(string_ltl psi2)))
 |F psi ->(match main_op psi with 
   |And_op|Or_op->"F("^(string_ltl psi)^")"
   |_->"F "^(string_ltl psi))
@@ -120,6 +120,25 @@ let string_option (printer:'a->string):('a option ->string)=function
   |None->"None"
   |Some x ->"Some"^(printer x)
 
+
+(*let rec ltl_of_string (string_fml:string):ltl=
+  if string_fml="" then failwith "empty formula" else match string_fml.[0] with
+  |' '|'('|')'->ltl_of_string (String.sub string_fml 1 (String.length string_fml -1 ))
+  |'P'->Prop(string_fml.[6])
+  |'T'->Top
+  |'B'->Bot
+  |'A'->let sep= String.split_on_char ',' (String.sub string_fml 4 (String.length string_fml -4 )) in
+    And(ltl_of_string sep[0],ltl_of_string sep[1])
+  |'O'->
+  |'N'->
+  |'X'->
+  |'F'->
+  |'G'->
+  |_->*)
+
+
+
+
 (**NOT USED Computes negative normal form of phi *)
 let rec nnf (phi:ltl)=
   match phi with
@@ -161,6 +180,7 @@ let apply_trans (l:ltl list) =
   let next_fml = List.filter(fun phi -> let op = main_op phi in op= X_op || main_op phi = NX_op) l in 
     List.map(function 
     |X psi ->psi
+    |Neg(X(psi))->Neg(psi)
     |_->failwith "not a X formula" )next_fml
 
 
@@ -301,30 +321,57 @@ let prune_0_applies (ll:ltl list list):bool =
 (*no XF-ev in v is satisfied between the two nodes*)
     (f_X_ev current_list))i
 
+(**Gets fitting valuation for a list where transition applies*)
+let required_val (l:ltl list):ltl list=
+  List.filter(fun x -> main_op x = Prop_op)l
+
+
 (**Returns true iff phi is satisfyable in the fragment of ltl logic without until*)
 let sat (phi:ltl):bool =
   (*Also prints the unraveling of the tableau*)
   let _ = print_string("Testing satisfyability of "^(string_ltl phi)^"\n") in
-  let rec sat_0 (ll:ltl list list):bool=
+
+  (*body of the function*)
+  let rec sat_0 (ll:ltl list list)(model:ltl list list):bool=
+
+    (*current node in the tableau*)  
     let current_list = List.hd ll in 
-    let _ = print_string ( string_ltl_list current_list ^"\n") in
-      if current_list = [] then let () = print_string("Empty rule has validated this branch\n") in true else
+    let _ = print_string ("To be satisfied in this node:"^ string_ltl_list current_list ^"\n") in
+
+      (*testing empty rule, contradiction rule and bottom rule*)
+      if current_list = [] then 
+        let () = print_string("Empty rule has validated this branch\nA model is:\n") in 
+        let () = print_string((printer_to_list string_ltl_list)model^"\n")in true else
       if contains_contra current_list then let () = print_string("Contradiction rule has discarded this branch\n") in false else
       if contains_op Bot_op current_list <>None then  let () = print_string("Bottom rule has discarded this branch\n") in false else
+
+      (*testing other static rules and applying them if possible*)
       match static_rule current_list with
       |Some op-> if is_binary_op op then let _ = print_string("Branching\n") in 
       let two_sons = get_rid_Binary op current_list in
-        (let _ = print_string("Branch 1\n") in sat_0 (two_sons false::ll))||(let _ = print_string("Branch 2\n") in sat_0 (two_sons true::ll)) else 
-        sat_0 (get_rid_Unary op current_list :: ll)
-      |None->if loop_applies ll then let () = print_string("Loop rule has validated this branch\n") in true else
+        (let _ = print_string("Branch 1\n") in sat_0 (two_sons false::ll) model)||(let _ = print_string("Branch 2\n") in sat_0 (two_sons true::ll) model) else 
+        sat_0 (get_rid_Unary op current_list :: ll) model
+
+      (*testing dynamic rules*)  
+      |None->if loop_applies ll then  
+        let () = print_string("Loop rule has validated this branch\nA model is:\n\n") in
+        let () = print_string((printer_to_list string_ltl_list)model^"Loop from now on\n\n")in true else
         if prune_applies ll then  let () = print_string("Prune rule has discarded this branch\n") in false else
         if prune_0_applies ll then  let () = print_string("Prune_0 rule has discarded this branch\n") in false else 
-        let () = print_string ("Transition\n") in 
-        sat_0 (apply_trans current_list :: ll) in 
-  let satis = sat_0[[phi]] in 
-    if satis then let () = print_string(string_ltl phi ^" is satisfyable\n\n") in true else
-      let () = print_string(string_ltl phi ^" is not satisfyable\n\n") in false
+        
+
+      (*if none applies, save the valuation and make transition*)
+        let () = print_string ("Transition\n") in
+        let valuation = required_val current_list in
+        sat_0 (apply_trans current_list :: ll) (model@[valuation]) in
+
+  let satis = sat_0[[phi]][] in 
+    if satis then let () = print_string(string_ltl phi ^" is satisfyable\n"^"\n\n") in true else
+      let () = print_string(string_ltl phi ^" is not satisfyable\n"^"\n\n") in false
     
+
+
+
 (**Returns true iff phi is valid in the fragment of ltl logic without until*)
 let valid phi = not(sat(Neg(phi)))
 
