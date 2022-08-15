@@ -2,7 +2,7 @@
 
 This program is an implementation of [Reynolds](https://arxiv.org/abs/1604.03962). It takes as input an LTL formula.
 It prints the development of the tree while searching for a model.
-It returns `true` and a model if the formula is satisfiable, `false` if it is not.
+It returns `true` **and a model** if the formula is satisfiable, `false` if it is not.
 
 In case an eventuality subformula (F or G) is present and the program claims satisfiability with the "LOOP" rule, it will tell the user to loop to find the actual, infinite model (eg. `G(Prop 'p')`). From where to loop is left to the user, sadly. If it does not end with the "LOOP" rule, an infinite model is found by choosing any valuation for the remaining states. It also happens that a propositional variable is present as a subformula, but not specified in the model. This means that the choice of the truth value for this variable is not relevant to the satisfiability of the formula (eg. `Or(Prop 'p',Prop 'q')` will simply tell to set variable `p` to true).
 
