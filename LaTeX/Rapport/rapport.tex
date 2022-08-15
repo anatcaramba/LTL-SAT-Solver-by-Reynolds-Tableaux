@@ -117,12 +117,12 @@ it can.
 
 
 \subsection*{Arguments supporting their validity}
-/////
+- TO DO
 
 
 
 \subsection*{Summary and future work}
-/////
+- TO DO
 \newpage  
 
 \section{Introduction}
@@ -209,6 +209,10 @@ exactly is an equality.
 
 Also, note that $s\models \G\phii$ if and only if in the unique path $s=s_0,s_1\ldots s_n$, we have
 $s_n\models\phii$ for every $n\geq 0$.
+
+- DRAW TO EXPLAIN
+
+- GIVE ONE OR TWO EXAMPLES
 
 
 \begin{tikzpicture}[main/.style = {draw, circle}] 
@@ -310,9 +314,10 @@ Also, as a convention, we will consider the transition systems to be \emph{seria
 
 \section{Reynolds' SAT Solver for LTL: an implementation}
 \subsection{Reynolds' tableaux algorithm for LTL}
-- Why this algo?
+- EXPLAIN WHY WE HVE CHOSEN THIS ALGO
 
-- Description of the algo
+- DESCRIBE ALGO (MY OWN WORDS)(BROADLY SPEAKING)
+
 \subsection{An implementation in Ocaml}
 \subsubsection*{Why Ocaml?}
 The choice of a functional programming language was guided by the close relationship
@@ -360,6 +365,15 @@ The program contains a handful of useful functions such as `contains$\_$contra',
 or `are$\_$equal', which often are not much more than tools made out of the original librairies
 of Ocaml (List, mainly).
 
+We have chosen to view a node of the tableau as a `ltl list list'.
+First of all, it makes perfect sense for a
+node to be represented as a `ltl list', given that the algorithm unravels the subformulas which 
+have to be satisfied if the formula has to be true. Then, we need to be able to keep trace
+of ancestors of every node, it case we need to check if rules LOOP, PRUNE, PRUNE$_0$ apply.
+However, since Ocaml deals with immutable objects, we cannot create a global tree structure
+that we would update throughout the algorithm. Then we have to pass the ancestors as parameters
+in our recursive process. This is why we treat every node as a `ltl list list'.
+
 Main function `sat' is given in the appendix; it has no innovative feature, and mostly
 follows 
 the structure of Reynolds' algorithm (\cite{ReyLTL}). In addition to that, it prints 
@@ -368,14 +382,36 @@ in each node, tell when there is branching, when a branch is discarded or valida
 We tried to give the main information while keeping the output readable.
 
 The most though-out functions in the program are those designed to test `dynamic'
-termination rules: LOOP, PRUNE and PRUNE$\_$0.
+termination rules: LOOP, PRUNE and PRUNE$_0$. For example, take the LOOP rule as defined in 
+\cite{ReyLTL}. 
+\begin{definition}
+    \emph{(LOOP rule)}
+    If a node $v$ with poised label $\Gamma_v$ has a proper ancestor (i.e. not itself) $u$ with
+poised label $\Gamma_u$ u such that $\Gamma_v \subseteq \Gamma_u$, and such that for each X-eventuality of the form XF $\beta$ in $\Gamma_u$ we
+have a node $w$ such that $u < w \leq v $ and $\beta \in$ $\Gamma_w$ then $v$ can be a validated leaf.
+\end{definition}
+Here is our function, which returns true if and only if the LOOP rule
+applies to the tableau.
+\begin{lstlisting}
+let loop_applies (ll:ltl list list):bool=
+    let i = poised_ancestors_contain ll in
+        let current_list = List.hd ll in
+            List.exists(fun k_v -> is_included (List.nth ll k_v)(current_list) 
+            List.for_all(fun phi->List.exists (fun j->belongs_list phi (List.nth ll j)) (range 1 (k_v+1) ))(f_X_ev (current_list)))i
+\end{lstlisting}
 
-- How it computes models (remains to be done)
+-EXPLAIN FCT
+
+- EXPLAIN HOW WE COMPUTE MODELS
 
 
 \section{Towards a constructive proof for completeness of fair CTL}
 
+- TRANSITION : WE WOULD LIKE THE SAME KIND OF ALGO FOR CTLf
 
+- PROBLEM : CONSTRUCTIVITY -> THE ISSUE WITH EG -> NEED TO FIND STH CLOSE TO LOOP/PRUNE
+
+- TRAILS FOR IMPROVEMENT/INSPIRATION FROM \cite{GhivG16}. USE THE WORK DONE ON `MINIMALITY' OF AR
 
 
 
