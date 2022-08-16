@@ -1,5 +1,0 @@
-(executable
- (name test_prog)
- (libraries ounit2))
-
- 
