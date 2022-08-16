@@ -55,22 +55,27 @@ You can now apply function "sat" on any LTL formula by typing:
 Let us give an example. Typing `let _ = sat(And(Prop 'p',Or(Neg(Prop 'p'),Neg(X(Prop 'p')))))` we get the following output:
 ```
 Testing satisfyability of p &(Neg p | Neg X p)
-Node:p &(Neg p | Neg X p)
-Node:p ; Neg p | Neg X p
+
+Node: p &(Neg p | Neg X p)
+Node: p ; Neg p | Neg X p
 
 Branching
+
 Branch 1
-Node:p ; Neg p
+Node: p ; Neg p
 
 Contradiction rule has discarded this branch
 Branch 2
-Node:p ; Neg X p
+Node: p ; Neg X p
 
 Transition
-Node:Neg p
+
+Node: Neg p
 Transition
-Node:
+
+Node: 
 Empty rule has validated this branch
+
 A model is:
 p ; Neg p
 

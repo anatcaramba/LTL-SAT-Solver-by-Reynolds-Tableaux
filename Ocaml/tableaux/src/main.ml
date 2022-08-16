@@ -329,45 +329,45 @@ let required_val (l:ltl list):ltl list=
 (**Returns true iff phi is satisfyable in the fragment of ltl logic without until*)
 let sat (phi:ltl):bool =
   (*Also prints the unraveling of the tableau*)
-  let _ = print_string("Testing satisfyability of "^(string_ltl phi)^"\n") in
+  let _ = print_string("Testing satisfyability of "^(string_ltl phi)^"\n\n") in
 
   (*body of the function*)
   let rec sat_0 (ll:ltl list list)(model:ltl list list):bool=
 
     (*current node in the tableau*)  
     let current_list = List.hd ll in 
-    let _ = print_string ("Node:"^ string_ltl_list current_list ^"\n") in
+    let _ = print_string ("Node: "^ string_ltl_list current_list ^"\n") in
 
       (*testing empty rule, contradiction rule and bottom rule*)
       if current_list = [] then 
-        let () = print_string("Empty rule has validated this branch\nA model is:\n") in 
+        let () = print_string("Empty rule has validated this branch\n\nA model is:\n") in 
         let () = print_string((printer_to_list string_ltl_list)model^"\n")in true else
       if contains_contra current_list then let () = print_string("Contradiction rule has discarded this branch\n") in false else
       if contains_op Bot_op current_list <>None then  let () = print_string("Bottom rule has discarded this branch\n") in false else
 
       (*testing other static rules and applying them if possible*)
       match static_rule current_list with
-      |Some op-> if is_binary_op op then let _ = print_string("Branching\n") in 
+      |Some op-> if is_binary_op op then let _ = print_string("Branching\n\n") in 
       let two_sons = get_rid_Binary op current_list in
         (let _ = print_string("Branch 1\n") in sat_0 (two_sons false::ll) model)||(let _ = print_string("Branch 2\n") in sat_0 (two_sons true::ll) model) else 
         sat_0 (get_rid_Unary op current_list :: ll) model
 
       (*testing dynamic rules*)  
       |None->if loop_applies ll then  
-        let () = print_string("Loop rule has validated this branch\nA model is:\n\n") in
+        let () = print_string("Loop rule has validated this branch\n\nA model is:\n\n") in
         let () = print_string((printer_to_list string_ltl_list)model^"Loop from now on\n\n")in true else
-        if prune_applies ll then  let () = print_string("Prune rule has discarded this branch\n") in false else
-        if prune_0_applies ll then  let () = print_string("Prune_0 rule has discarded this branch\n") in false else 
+        if prune_applies ll then  let () = print_string("Prune rule has discarded this branch\n\n") in false else
+        if prune_0_applies ll then  let () = print_string("Prune_0 rule has discarded this branch\n\n") in false else 
         
 
       (*if none applies, save the valuation and make transition*)
-        let () = print_string ("Transition\n") in
+        let () = print_string ("Transition\n\n") in
         let valuation = required_val current_list in
         sat_0 (apply_trans current_list :: ll) (model@[valuation]) in
 
   let satis = sat_0[[phi]][] in 
-    if satis then let () = print_string(string_ltl phi ^" is satisfyable\n"^"\n\n") in true else
-      let () = print_string(string_ltl phi ^" is not satisfyable\n"^"\n\n") in false
+    if satis then let () = print_string(string_ltl phi ^" is satisfyable\n\n\n") in true else
+      let () = print_string(string_ltl phi ^" is not satisfyable\n\n\n") in false
     
 
 
