@@ -65,6 +65,7 @@ Branch 1
 Node: p ; Neg p
 
 Contradiction rule has discarded this branch
+
 Branch 2
 Node: p ; Neg X p
 
