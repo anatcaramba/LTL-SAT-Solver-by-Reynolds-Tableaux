@@ -88,13 +88,15 @@ p &(Neg p | Neg X p) is satisfyable
 
 # Tests
 
-There are several tests in the file `./tableaux/test_prog.ml`. Many of these are unit tests, written during programming to ensure that the functions in `func.ml` were well written.
+There are several tests in the file `./src/tests.ml`. Many of these are unit tests, written during programming to ensure that the functions in `main.ml` were well written.
 
 To execute all the tests, run the command
 
-`dune exec tableaux/test_prog.exe`
+`dune exec src/tests.exe`
 
-We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test. The formula in the test case only has 5 nested operators, however we have tested up to 13 nestings, by recursively taking the disjunction of twice the formula with n-1 nestings. Since the procedure is PSPACE-complete (TODO add reference), we would expect an exponential time in functions of the number of nestings in the worst case, which is what we seem to get. This is normal, as adding a nesting doubles the number of leaves. A table and a graph in the report mentioned earlier bring further evidence of this fact.  (TODO modify this to a precise reference to a section of your report)
+We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test. This sequence of "worst-case formulas" is built by taking `Bot` at rank 0 (or any unsatisfiable formula), and out of rank n, build rank n+1 by taking the disjunction of two times the formula at rank n. The formula in the test case only has rank 5, however we have tested up to 13 nestings. Since the procedure is PSPACE-complete (see section 9 in [Reynolds 2016](https://arxiv.org/abs/1604.03962)), we would expect an exponential time in function of the number of nestings in the worst case, which is what we seem to get. This is normal, as adding a nesting doubles the number of leaves, all of which end up crossed (so the algorithm has to check every one of them). A table and a graph in the report mentioned earlier bring further evidence of this fact.  
+
+(TODO modify this to a precise reference to a section of your report)
 
 # Known limitations
 
