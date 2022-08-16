@@ -321,7 +321,7 @@ Also, as a convention, we will consider the transition systems to be \emph{seria
 \subsection{An implementation in Ocaml}
 \subsubsection*{Why Ocaml?}
 The choice of a functional programming language was guided by the close relationship
-between inductive definition of the formulas and the pattern matching feature.
+between inductive definitions of the formulas and the pattern matching feature.
 Throughout the program, functions make use of matching, let it be to discriminate
 what we call `eventuality formulas' from others, or to construct a printer
 for LTL formulas, delving into the possible imbrications of operators to construct
@@ -387,7 +387,7 @@ termination rules: LOOP, PRUNE and PRUNE$_0$. For example, take the LOOP rule as
 \begin{definition}
     \emph{(LOOP rule)}
     If a node $v$ with poised label $\Gamma_v$ has a proper ancestor (i.e. not itself) $u$ with
-poised label $\Gamma_u$ u such that $\Gamma_v \subseteq \Gamma_u$, and such that for each X-eventuality of the form XF $\beta$ in $\Gamma_u$ we
+poised label $\Gamma_u$ u such that $\Gamma_v \subseteq \Gamma_u$, and such that for each X-eventuality of the form XF$\beta$ in $\Gamma_u$ we
 have a node $w$ such that $u < w \leq v $ and $\beta \in$ $\Gamma_w$ then $v$ can be a validated leaf.
 \end{definition}
 Here is our function, which returns true if and only if the LOOP rule
