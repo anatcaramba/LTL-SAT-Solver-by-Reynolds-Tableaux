@@ -342,8 +342,8 @@ let sat (phi:ltl):bool =
       if current_list = [] then 
         let () = print_string("Empty rule has validated this branch\n\nA model is:\n") in 
         let () = print_string((printer_to_list string_ltl_list)model^"\n")in true else
-      if contains_contra current_list then let () = print_string("Contradiction rule has discarded this branch\n") in false else
-      if contains_op Bot_op current_list <>None then  let () = print_string("Bottom rule has discarded this branch\n") in false else
+      if contains_contra current_list then let () = print_string("Contradiction rule has discarded this branch\n\n") in false else
+      if contains_op Bot_op current_list <>None then  let () = print_string("Bottom rule has discarded this branch\n\n") in false else
 
       (*testing other static rules and applying them if possible*)
       match static_rule current_list with
