@@ -12,6 +12,13 @@ Propositional variables are written ` Prop 'p' ` (Prop is an operator taking a c
 Then, binary operators for Conjunction and Disjunction: ` And(phi,psi) `, ` Or(phi,psi) ` ;
 Unary operators for Negation, Next, Finally, Globally: `Neg(phi)`, `X(phi)`, `F(phi)`, `G(phi)`.
 
+# Required packages
+The program requires the following packages (check installation with --version):
+
+- ocaml version 4.13.1 at least
+- opam version 2.1.2
+- dune version 3.3.1
+- ounit2 version 2.2.6
 # Usage
 
 To compile the program, go into repository "tableaux":
