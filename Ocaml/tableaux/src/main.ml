@@ -336,7 +336,7 @@ let sat (phi:ltl):bool =
 
     (*current node in the tableau*)  
     let current_list = List.hd ll in 
-    let _ = print_string ("To be satisfied in this node:"^ string_ltl_list current_list ^"\n") in
+    let _ = print_string ("Node:"^ string_ltl_list current_list ^"\n") in
 
       (*testing empty rule, contradiction rule and bottom rule*)
       if current_list = [] then 

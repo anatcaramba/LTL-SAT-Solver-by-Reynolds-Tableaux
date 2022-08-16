@@ -1,9 +1,9 @@
 # An OCaml tableau solver for unary linear temporal logic
 
-This program is an implementation in OCaml of the tableau satisfiability solver for the (X,F)-fragment of LTL given in ([Reynolds 2016](https://arxiv.org/abs/1604.03962)). 
+This program is an implementation in OCaml of the tableau satisfiability solver for the (X,F)-fragment of LTL given in [Reynolds 2016](https://arxiv.org/abs/1604.03962). 
 It takes as input a formula, and returns `true` **and a model** if the formula is satisfiable, `false` if it is not. The solver also prints the development of the tree during model search.
 
-A theoretical foundation for this solver is given by the *completeness* of the treated fragment of LTL with respect to the axiomatization, combined with the completeness of Reynolds' tableau procedure; see Theorem 3.3 in ([Ghilardi and van Gool 2017](https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/div-classtitlea-model-theoretic-characterization-of-monadic-second-order-logic-on-infinite-wordsdiv/6B7E629B0B30B876618FC9EBF0AB9996)) and sections 7&8 in ([Reynolds 2016](https://arxiv.org/abs/1604.03962)) Concretely, these theorems ensure that the solver will always give an output. 
+A theoretical foundation for this solver is given by the *completeness* of the treated fragment of LTL with respect to the axiomatization, combined with the completeness of Reynolds' tableau procedure; see Theorem 3.3 in [Ghilardi and van Gool 2017](https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/div-classtitlea-model-theoretic-characterization-of-monadic-second-order-logic-on-infinite-wordsdiv/6B7E629B0B30B876618FC9EBF0AB9996) and sections 7&8 in [Reynolds 2016](https://arxiv.org/abs/1604.03962) Concretely, these theorems ensure that the solver will always give an output. 
 
 This solver was written in Summer 2022 by Anatole Leterrier in the context of an MPRI (M2) internship at [IRIF](https://www.irif.fr) under the supervision of [Sam van Gool](https://www.samvangool.net). The solver is accompanied by a technical [internship report](./report.pdf) that provides theoretical background. We gratefully acknowledge the financial support for the internship from the [DIM Maths Innov](https://www.dim-mathinnov.fr/) program of the [FSMP](https://sciencesmaths-paris.fr/) and the Île-de-France region. 
 
@@ -15,40 +15,70 @@ This solver was written in Summer 2022 by Anatole Leterrier in the context of an
 
 (TODO Change the filenames into something more descriptive, for example func.ml -> solver.ml and test_prog.ml -> test_solver.ml)
 
-The main program is in the file [filename](with link)
+The main program is in the file [main.ml](./tableaux/src/main.ml)
 
-The tests are in the file [filename](with link)
+The tests are in the file [tests.ml](./tableaux/src/tests.ml)
 # Dependencies
 
 The program depends on the following software, which you need to install to be able to compile it on your own machine:
 
-- ocaml version 4.13.1+
-- opam version 2.1.2+
-- dune version 3.3.1+
-- ounit2 version 2.2.6+
+* First check installation for [opam version 2.1.2+](https://opam.ocaml.org/doc/Install.html);
 
-(TODO add hyperlinks to the above items)
+* Then install:
+- [ocaml version 4.13.1+](https://ocaml.org/)
+- [dune version 3.3.1+](https://opam.ocaml.org/packages/dune/)
+- [ounit2 version 2.2.6+](https://opam.ocaml.org/packages/ounit2/)
+ This is done by typing `opam install package` in a terminal for each of the three packages mentioned.
+
 # Usage
 
 To compile the program, while in the subfolder `tableaux`, execute the command `dune build` on a shell.
 
 The current version of the program can be tested in two ways: 
 
-1. By modifying the tests in the file `test_prog.ml`.
+1. By modifying the tests in the file `tests.ml`.
 
 2. In an interactive toplevel such as `ocaml` or `utop`. To import the code, type:
-` #use "./tableaux/test_prog/func.ml";; `
-
-(TODO add a complete example of a phi)
+` #use "./tableaux/src/main.ml";; `
 
 You can now apply function "sat" on any LTL formula by typing:
-` let _ = sat(phi) ;; `
+`let _ = sat(phi) ;;` where phi is an LTL formula satisfyng the syntax given below:
 
-We recall the syntax used for LTL formulas in this program:
 * Propositional variables are written ` Prop 'p' `; that is, `Prop` is an operator taking a `char` as an argument);
+
 * Binary operators for Conjunction and Disjunction: ` And(phi,psi) `, ` Or(phi,psi) ` ;
+
 * Unary operators for Negation, Next, Finally, Globally: `Neg(phi)`, `X(phi)`, `F(phi)`, `G(phi)`.
 
+
+
+Let us give an example. Typing `let _ = sat(And(Prop 'p',Or(Neg(Prop 'p'),Neg(X(Prop 'p')))))` we get the following output:
+```
+Testing satisfyability of p &(Neg p | Neg X p)
+Node:p &(Neg p | Neg X p)
+Node:p ; Neg p | Neg X p
+
+Branching
+Branch 1
+Node:p ; Neg p
+
+Contradiction rule has discarded this branch
+Branch 2
+Node:p ; Neg X p
+
+Transition
+Node:Neg p
+Transition
+Node:
+Empty rule has validated this branch
+A model is:
+p ; Neg p
+
+p &(Neg p | Neg X p) is satisfyable
+
+
+- : bool = true 
+```
 
 # Tests
 
