@@ -92,12 +92,10 @@ To execute all the tests, run the command
 
 `dune exec src/tests.exe`
 
-We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test. This sequence of "worst-case formulas" is built by taking `Bot` at rank 0 (or any unsatisfiable formula), and out of rank n, build rank n+1 by taking the disjunction of two times the formula at rank n. The formula in the test case only has rank 5, however we have tested up to 13 nestings. Since the procedure is PSPACE-complete (see section 9 in [Reynolds 2016](https://arxiv.org/abs/1604.03962)), we would expect an exponential time in function of the number of nestings in the worst case, which is what we seem to get. This is normal, as adding a nesting doubles the number of leaves, all of which end up crossed (so the algorithm has to check every one of them). A table and a graph in the report mentioned earlier bring further evidence of this fact.  
-
-(TODO modify this to a precise reference to a section of your report)
+We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test, and is further described in [this report](./report.pdf)(Section 3.2 § Performance)
 
 # Known limitations
 
 In case an eventuality subformula (F or G) is present and the program claims satisfiability with the "LOOP" rule, it will tell the user to loop to find the actual, infinite model (eg. `G(Prop 'p')`). The current version does not yet specify exactly where to loop; this point is left to future work. If the program does not end with the "LOOP" rule, an infinite model is found by choosing any valuation for the remaining states. It also happens that a propositional variable is present as a subformula, but not specified in the model. This means that the choice of the truth value for this variable is not relevant to the satisfiability of the formula (eg. with `Or(Prop 'p',Prop 'q')` it will simply tell to set variable `p` to true, and not specify a truth value for `q`).
 
-The implementation can likely still be optimized for time and space performance, also see the discussion in Section x.y of the [report](./report.pdf) (TODO add precise reference).
+The implementation can likely still be optimized for time and space performance, also see the discussion in the [report](./report.pdf)(Section 3.2 § Future improvements).

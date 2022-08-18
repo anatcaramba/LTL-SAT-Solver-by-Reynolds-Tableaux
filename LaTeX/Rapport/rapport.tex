@@ -461,6 +461,12 @@ Most static rules are straightforward, so we will only specify a few:
     \item [-] etc.
 \end{itemize}
 
+The most innovative part of the algorithm are the `dynamic rules': LOOP, PRUNE, {PRUNE}$_0$, TRANSITION.
+
+TRANSITION is the rule we apply when nothing else is possible, meaning that we have simplified a set of formulas the most we could. It gets 
+rid of literals (formulas of the form $p$ or $\neg p$)
+
+
 \subsection{An implementation in OCaml}
 
 We recall once again that the following project can be found 
