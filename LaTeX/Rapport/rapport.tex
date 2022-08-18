@@ -139,12 +139,23 @@ proof in~\cite{GhivG16} constructive.
 
 
 \subsection*{Arguments supporting their validity}
-- TO DO
+
+- Something about part 2?
+
+- The OCaml implementation has proven to be conclusive on a comprehensive set of test cases, 
+thanks to termination of Reynolds' tableaux algorithm. We provide a graph of complexity in time,
+for a worst-case analysis. Comparisons with existing implementations in \CC~show room for improvement on our side,
+however this prototype shows that an approach based on functional programming makes sense, and those elements,
+combined with object-oriented tools, may be a source of improvement.
 
 
 
 \subsection*{Summary and future work}
-- TO DO
+This internship has revolved around deeply understanding the different tools used to evaluate whether formulas in 
+temporal logics are satisfiable. A prototype OCaml SAT solver was programmed, less for performance purposes than to understand 
+how an algorithm can deal with \emph{eventualities}, and actually compute an infinite model for formulas which involve them.
+This way, it might be possible to adapt those methods to more complex temporal logics, such as CTL, \CTLf~(which we have studied),
+or even temporal logics for trees with counters, in a further future.
 \newpage  
 
 \section{Introduction}\label{SecIntro}
@@ -363,7 +374,9 @@ Also, as a convention, we will require the transition systems to be \emph{serial
  
 - TAKJ ABOUT HOW COMPLETENESS CAN BE PROVED IF WE CAN SOLVE SAT
 
+- DESCRIBE AT LENGTH ONE AUTOMATA-BASED ALGO FOR LTL SAT (EX LAROUSSINIE) + CITE OTHERS
 
+- DESCRIBE A TABLEAU METHOD, A CLASSIC INVOLVING GRAPHS (EX WOLPER) + CITE OTHERS
 
 - TRANSITION : ONE LAST EXAMPLE WHICH WE WILL TREAT IN THE FOLLOWING SECTION
 
@@ -536,6 +549,7 @@ experimental rather than optimized. In contrast, Leviathan (\cite{Leviathan})
 is an implementation of the algorithm in \CC, which was developed by a group of researchers including Mark Reynolds;
 it is much more complete than was is presented below, making use of parsers for inputs,
 telling users where to loop to find infinite models, etc. The tool can be downloaded on \href{https://github.com/Corralx/leviathan}{this webpage}.
+In the same vein, `BLACK'~\cite{Black21} is more recent and incorporates SAT solvers.
     
 \subsubsection*{Overview of the implementation}
 
