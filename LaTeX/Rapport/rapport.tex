@@ -376,13 +376,13 @@ to study the algorithm, and what was conceived like a practical experimentation 
 
 The greatest feature of this paper is to use trees (instead of automata, or graphs used by classic tableaux), which allows to
 make the most benefit out of recursion, not having to create massive data structures. We will briefly describe the algorithm, before discussing
-more precisely about the details of our implementation in OCaml. Note once again that we restrict the language to unary LTL,
+more precisely the details of our implementation in OCaml. Note once again that we restrict the language to unary LTL,
 that is, LTL without `Until'.
 
 
 \subsection{Reynolds' tableaux algorithm for LTL}
 
-We will give the algorithm in pseudo-code, then explain the most important parts of it.\\
+We will write the algorithm in pseudo-code, then explain the most important parts of it.\\
 
 {\tt 
 
@@ -392,9 +392,9 @@ Select any order of exploration of the leaves
 
 Set S $\gets$ $\{\phii\}$
 
-Tree T consists only of root labeled S
+Tree T $\gets$ Root labeled S
 
-While (no output):
+While (There is at least one uncrossed leaf):
 
 \hspace*{1cm} S $\gets$ Next uncrossed leaf in the order
 
@@ -446,9 +446,7 @@ While (no output):
 
 \hspace*{1cm}\hspace*{1cm}      Add leaf labeled S' below S
 
-\hspace*{1cm}    If all leaves are crossed:
-
-\hspace*{1cm}\hspace*{1cm}       Return False \newline
+Return False \newline
 
 }
 
@@ -463,9 +461,46 @@ Most static rules are straightforward, so we will only specify a few:
 
 The most innovative part of the algorithm are the `dynamic rules': LOOP, PRUNE, {PRUNE}$_0$, TRANSITION.
 
-TRANSITION is the rule we apply when nothing else is possible, meaning that we have simplified a set of formulas the most we could. It gets 
-rid of literals (formulas of the form $p$ or $\neg p$)
+TRANSITION is the rule we apply to a leaf when nothing else is possible, meaning that we have simplified a set of formulas the most we could. It gets 
+rid of literals (formulas of the form $p$ or $\neg p$), which describe the valuation of the node in the model being constructed; then,
+it takes the remaining formulas in the set labeling the leaf, which all are of the form $\X\psi$ or $\neg\X\psi$, and removes the `Next' operator,
+meaning that we have moved onto the next state.
 
+LOOP, PRUNE (and {PRUNE}$_0$, which is a variant of PRUNE) are the rules which decide what happens when a branch becomes periodic without ever 
+coming to a conclusion.
+
+Let us talk specifically of PRUNE.
+We will state the rule as it is in Reynolds' paper (\cite{ReyLTL}), then explain its meaning; reasoning about the other rules is similar.
+
+\begin{definition}
+    \emph{(PRUNE rule)}
+    Suppose that $u < v < w$ and each of $u$, $v$ and $w$ have the same poised
+    label $\Gamma$. Suppose also that for each $\X$-eventuality of the form $\X\F\beta$ in $\Gamma$, if there is $x$ with
+    $\beta \in \Gamma_x$ and $v < x \leq w$ then there is $y$ such that $\beta\in\Gamma_y$ and $u < y \leq v$. Then $w$ can be a
+    crossed leaf.
+\end{definition}
+
+\begin{center} 
+    \begin{tikzpicture}
+        \node {$\G\neg p\andd \F p$}[level distance = 1 cm]
+            child {node[red] {$\G\neg p$, $\F p$}
+                child{node {$\neg p$, $\X\G\neg p$, $\F p$}[sibling distance = 3.5cm]
+                    child{node{$\neg p$, $\X\G\neg p$, $p$}
+                        child{node {x}}
+                    }
+                    child{node{$\neg p$, $\X\G\neg p$, $\X\F p$}
+                        child{node[red] {$\G\neg p$, $\F p$}
+                            child{node{\ldots}}
+                        }
+                    }
+                }
+            };
+    \end{tikzpicture}
+\end{center}
+
+In the example above, we can see that the tree periodically loops into the same state labeled by the set $\{\G\neg p$, $\F p\}$;
+however, the $\X$-eventuality $\F p$ is never fulfilled, as the left branch is discarded by the contradiction rule. The PRUNE rule
+makes sure that formulas of the type $\F\psi$ are postponed indefinitely, then discards the branch for not making any progress.
 
 \subsection{An implementation in OCaml}
 
@@ -549,7 +584,7 @@ termination rules: LOOP, PRUNE and PRUNE$_0$. For example, take the LOOP rule as
 \begin{definition}
     \emph{(LOOP rule)}
     If a node $v$ with poised label $\Gamma_v$ has a proper ancestor (i.e. not itself) $u$ with
-poised label $\Gamma_u$ u such that $\Gamma_v \subseteq \Gamma_u$, and such that for each X-eventuality of the form XF$\beta$ in $\Gamma_u$ we
+poised label $\Gamma_u$ u such that $\Gamma_v \subseteq \Gamma_u$, and such that for each $\X$-eventuality of the form $\X\F\beta$ in $\Gamma_u$ we
 have a node $w$ such that $u < w \leq v $ and $\beta \in$ $\Gamma_w$ then $v$ can be a validated leaf.
 \end{definition}
 Here is our function, which returns true if and only if the LOOP rule
@@ -725,9 +760,10 @@ The idea the proof starts with is fixing a general formula $\phii_0$ which is \e
 The goal will be to prove that there exists a transition system  and a valuation satisfying $\phii_0$, therefore proving completeness. But 
 the model is never \emph{actually} computed. Because $\phii_0$ is not equal to $\bot$, there exists an \emph{ultrafilter} $x_0$
 in $\A$ such that $\phii_0 \in x_0$ (see~\cite[Section 3.3]{GehvG22}). From there on, the specific tableaux method is unraveled, using the 
-\emph{ultrafilter frame} of $\A$; but we never really know what $x_0$ consists of, and what formulas it contains.
+\emph{ultrafilter frame} of $\A$; but we never really know what $x_0$ consists of, and what formulas it contains. This 
+is the object of the research we present below.
 
-\subsubsection*{}
+\subsubsection*{Atomic lower bounds}
 Not every infinite algebra is \emph{atomic}, which means that maybe not every ultrafilter in $\A$ has a minimum.
 What is sure is that if there is a formula $\varphi_{0,m}$ such that $x_0 =$ $\uparrow\varphi_{0,m}$,
 it must be absolutely restrictive on which trees can be accepted as models. Let us precise what this means. 
