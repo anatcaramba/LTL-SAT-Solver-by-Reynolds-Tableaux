@@ -1,23 +1,17 @@
 # An OCaml tableau solver for unary linear temporal logic
 
-This program is an implementation in OCaml of the tableau satisfiability solver for the (X,F)-fragment of LTL given in [Reynolds 2016](https://arxiv.org/abs/1604.03962). 
+This program is an implementation in OCaml of the tableau satisfiability solver for the (X,F) - fragment of LTL given in [Reynolds 2016](https://arxiv.org/abs/1604.03962). 
 It takes as input a formula, and returns `true` **and a model** if the formula is satisfiable, `false` if it is not. The solver also prints the development of the tree during model search.
 
-A theoretical foundation for this solver is given by the *completeness* of the treated fragment of LTL with respect to the axiomatization, combined with the completeness of Reynolds' tableau procedure; see Theorem 3.3 in [Ghilardi and van Gool 2017](https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/div-classtitlea-model-theoretic-characterization-of-monadic-second-order-logic-on-infinite-wordsdiv/6B7E629B0B30B876618FC9EBF0AB9996) and sections 7&8 in [Reynolds 2016](https://arxiv.org/abs/1604.03962) Concretely, these theorems ensure that the solver will always give an output. 
+A theoretical foundation for this solver is given by the *completeness* of the treated fragment of LTL with respect to the axiomatization, combined with the completeness of Reynolds' tableau procedure; see Theorem 3.3 in [Ghilardi and van Gool 2017](https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/div-classtitlea-model-theoretic-characterization-of-monadic-second-order-logic-on-infinite-wordsdiv/6B7E629B0B30B876618FC9EBF0AB9996) and sections 7&8 in [Reynolds 2016](https://arxiv.org/abs/1604.03962). Concretely, these theorems ensure that the solver will always give an output. 
 
 This solver was written in Summer 2022 by Anatole Leterrier in the context of an MPRI (M2) internship at [IRIF](https://www.irif.fr) under the supervision of [Sam van Gool](https://www.samvangool.net). The solver is accompanied by a technical [internship report](./report.pdf) that provides theoretical background. We gratefully acknowledge the financial support for the internship from the [DIM Maths Innov](https://www.dim-mathinnov.fr/) program of the [FSMP](https://sciencesmaths-paris.fr/) and the Île-de-France region. 
 
 # Overview of the source code
 
-(TODO complete this section)
+The main program is in the file [main.ml](./tableaux/src/main.ml); most importantly, it contains function `sat`, which is the main feature of our solver.
 
-(TODO make the source tree very simple and clean, so that it is easy for someone to navigate. Then update all the links in this file.)
-
-(TODO Change the filenames into something more descriptive, for example func.ml -> solver.ml and test_prog.ml -> test_solver.ml)
-
-The main program is in the file [main.ml](./tableaux/src/main.ml)
-
-The tests are in the file [tests.ml](./tableaux/src/tests.ml)
+The tests are in the file [tests.ml](./tableaux/src/tests.ml).
 # Dependencies
 
 The program depends on the following software, which you need to install to be able to compile it on your own machine:
@@ -25,10 +19,14 @@ The program depends on the following software, which you need to install to be a
 * First check installation for [opam version 2.1.2+](https://opam.ocaml.org/doc/Install.html);
 
 * Then install:
-- [ocaml version 4.13.1+](https://ocaml.org/)
-- [dune version 3.3.1+](https://opam.ocaml.org/packages/dune/)
-- [ounit2 version 2.2.6+](https://opam.ocaml.org/packages/ounit2/)
- This is done by typing `opam install package` in a terminal for each of the three packages mentioned.
+
+ [ocaml version 4.13.1+](https://ocaml.org/)
+ 
+ [dune version 3.3.1+](https://opam.ocaml.org/packages/dune/)
+ 
+ [ounit2 version 2.2.6+](https://opam.ocaml.org/packages/ounit2/)
+
+ This is done in a terminal by typing `opam install` followed by the package name, for each of the three packages mentioned.
 
 # Usage
 
@@ -100,6 +98,6 @@ We have created a sequence of formulas that exhibits the worst-case performance 
 
 # Known limitations
 
-In case an eventuality subformula (F or G) is present and the program claims satisfiability with the "LOOP" rule, it will tell the user to loop to find the actual, infinite model (eg. `G(Prop 'p')`). The current version does not yet specify exactly where to loop; this point is left to future work. If the program does not end with the "LOOP" rule, an infinite model is found by choosing any valuation for the remaining states. It also happens that a propositional variable is present as a subformula, but not specified in the model. This means that the choice of the truth value for this variable is not relevant to the satisfiability of the formula (eg. `Or(Prop 'p',Prop 'q')` will simply tell to set variable `p` to true, and not specify a truth value for `q`).
+In case an eventuality subformula (F or G) is present and the program claims satisfiability with the "LOOP" rule, it will tell the user to loop to find the actual, infinite model (eg. `G(Prop 'p')`). The current version does not yet specify exactly where to loop; this point is left to future work. If the program does not end with the "LOOP" rule, an infinite model is found by choosing any valuation for the remaining states. It also happens that a propositional variable is present as a subformula, but not specified in the model. This means that the choice of the truth value for this variable is not relevant to the satisfiability of the formula (eg. with `Or(Prop 'p',Prop 'q')` it will simply tell to set variable `p` to true, and not specify a truth value for `q`).
 
 The implementation can likely still be optimized for time and space performance, also see the discussion in Section x.y of the [report](./report.pdf) (TODO add precise reference).
