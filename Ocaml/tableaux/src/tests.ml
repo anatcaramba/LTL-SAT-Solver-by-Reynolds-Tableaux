@@ -1,5 +1,5 @@
 open OUnit2
-open Func 
+open Main
   
 let id x = x
 
