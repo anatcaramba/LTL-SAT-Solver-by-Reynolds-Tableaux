@@ -109,7 +109,7 @@ LTL completeness
 (\emph{i.e.} the SAT problem) is handled
 in the literature. SAT has 
 multiple approaches using Büchi automata which recognize particular
-LTL formulas. In the theoretical part
+LTL formulas, but tableaux-oriented methods have also been striving. In the theoretical part
 of my internship, which I report in Section \ref*{SecLTLcomp} below,
 I helped clarify the link between states
 of the automata associated with the formula,
@@ -336,8 +336,8 @@ This makes apparent a nesting of a $\mu$ operator inside a $\nu$ operator. This 
 compared to LTL which only contains one fixpoint operator, without alternations of $\mu$ and $\nu$.  
 
 \begin{definition}\label{interp_form_algebra}
-    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $A$, we can define a \emph{valuation} 
-    $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $\A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^A(V)$).
+    For any finite set of propositional variables $\bar{p}$ and any $CTL^f$-algebra $\A$, we can define a \emph{valuation} 
+    $V:\bar{p}\to A$. Then any $CTL^f$-formula $\varphi$ with variables in $\bar{p}$ can be interpreted as a term in $\A$ (the \emph{interpretation} of $\varphi$ under $V$, $\varphi^\A(V)$).
 
     Then, we can say the equality $\varphi(\bar{p})=\psi(\bar{p})$ is \emph{valid} if it is true under every valuation to every $A$.
 
@@ -372,9 +372,36 @@ Also, as a convention, we will require the transition systems to be \emph{serial
 
 \section{Completeness of LTL}\label{SecLTLcomp}
  
-- TAKJ ABOUT HOW COMPLETENESS CAN BE PROVED IF WE CAN SOLVE SAT
+Once syntax and semantics of a particular logic are defined, the goal is to prove that the formulas they define to be true are the same,
+in order for a computer system to use it and be trusted. The first part is to prove that the syntactical (or logical) system is \emph{sound}
+with regard to the semantics, i.e. that every formula which can derived to be a \emph{tautology} (equivalent to $\top$) in the system is actually \emph{valid}
+(true under every valuation) semantically. Soundness is usually proved by induction, examining the last rule of inference used to derive the tautology.
 
+Completeness is the reciprocal implication, and proving it can be much harder. In the cases which are of interest to us, completeness is proved by solving the 
+\emph{SAT problem}, which is the question of whether a formula has a model (is satisfiable by a valuation). Indeed, the following are equivalent:
+\begin{equation*}
+    \begin{gathered}
+        \forall\phii (\phii\mbox{ is valid }\Rightarrow \phii\equiv\top)\\
+        \forall\phii (\mbox{not(}\phii\equiv\top\mbox{)}\Rightarrow \phii\mbox{ is not valid})\\
+        \forall\phii (\neg\phii\not\equiv\bot\Rightarrow \neg\phii\mbox{ is satisfiable})\\
+        \forall\psi (\psi\not\equiv\bot\Rightarrow \psi\mbox{ is satisfiable}) \\
+    \end{gathered}
+\end{equation*}
+ 
+Then it is sufficient to show that every \emph{consistent} formula (not equivalent to $\bot$) is satisfiable.
+
+This is why this section will focus on the different ways the SAT problem is handled in LTL. In the literature, we distinguish between two
+major families of approaches: automata- and tableaux- based. We will go at length about the major assets and setbacks of both approaches.
+
+\subsection{Automata for LTL}
+
+The approch we will describe comes from F. Laroussinie's MPRI course (\cite[pages 22-36]{LarouLTL}); variants can be found in \cite[Section 3]{CristauAuto},
+\cite[Section 1.3]{GastinAuto}. Also look at this \href{http://www.lsv.fr/~gastin/ltl2ba/index.php}{implementation in C}, computing accepting Büchi automata for LTL
+formulas (presented in \cite[Pages 53-65]{OddouxProg}).
+    
 - DESCRIBE AT LENGTH ONE AUTOMATA-BASED ALGO FOR LTL SAT (EX LAROUSSINIE) + CITE OTHERS
+
+\subsection{Tableaux for LTL}
 
 - DESCRIBE A TABLEAU METHOD, A CLASSIC INVOLVING GRAPHS (EX WOLPER) + CITE OTHERS
 
@@ -513,7 +540,7 @@ We will state the rule as it is in Reynolds' paper (\cite{ReyLTL}), then explain
 
 In the example above, we can see that the tree periodically loops into the same state labeled by the set $\{\G\neg p$, $\F p\}$;
 however, the $\X$-eventuality $\F p$ is never fulfilled, as the left branch is discarded by the contradiction rule. The PRUNE rule
-makes sure that formulas of the type $\F\psi$ are postponed indefinitely, then discards the branch for not making any progress.
+makes sure that when formulas of the type $\F\psi$ are postponed indefinitely the branch is discarded for not making any progress.
 
 \subsection{An implementation in OCaml}
 
