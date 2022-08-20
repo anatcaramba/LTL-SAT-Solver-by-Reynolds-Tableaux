@@ -5,7 +5,7 @@ It takes as input a formula, and returns `true` **and a model** if the formula i
 
 A theoretical foundation for this solver is given by the *completeness* of the treated fragment of LTL with respect to the axiomatization, combined with the completeness of Reynolds' tableau procedure; see Theorem 3.3 in [Ghilardi and van Gool 2017](https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/div-classtitlea-model-theoretic-characterization-of-monadic-second-order-logic-on-infinite-wordsdiv/6B7E629B0B30B876618FC9EBF0AB9996) and sections 7&8 in [Reynolds 2016](https://arxiv.org/abs/1604.03962). Concretely, these theorems ensure that the solver will always give an output. 
 
-This solver was written in Summer 2022 by Anatole Leterrier in the context of an MPRI (M2) internship at [IRIF](https://www.irif.fr) under the supervision of [Sam van Gool](https://www.samvangool.net). The solver is accompanied by a technical [internship report](./report.pdf) that provides theoretical background. We gratefully acknowledge the financial support for the internship from the [DIM Maths Innov](https://www.dim-mathinnov.fr/) program of the [FSMP](https://sciencesmaths-paris.fr/) and the Île-de-France region. 
+This solver was written in Summer 2022 by Anatole Leterrier in the context of an MPRI (M2) internship at [IRIF](https://www.irif.fr) under the supervision of [Sam van Gool](https://www.samvangool.net). The solver is accompanied by a technical [internship report](./rapport.pdf) that provides theoretical background. We gratefully acknowledge the financial support for the internship from the [DIM Maths Innov](https://www.dim-mathinnov.fr/) program of the [FSMP](https://sciencesmaths-paris.fr/) and the Île-de-France region. 
 
 # Overview of the source code
 
@@ -37,7 +37,7 @@ The current version of the program can be tested in two ways:
 1. By modifying the tests in the file `tests.ml`.
 
 2. In an interactive toplevel such as `ocaml` or `utop`. To import the code, type:
-` #use "./tableaux/src/main.ml";; `
+` #use "./Ocaml/tableaux/src/main.ml";; `
 
 You can now apply function "sat" on any LTL formula by typing:
 `let _ = sat(phi) ;;` where phi is an LTL formula satisfyng the syntax given below:
@@ -86,7 +86,7 @@ p &(Neg p | Neg X p) is satisfyable
 
 # Tests
 
-There are several tests in the file `./src/tests.ml`. Many of these are unit tests, written during programming to ensure that the functions in [main.ml](./Ocaml/tableaux/src/main.ml) were well written.
+There are several tests in the file [tests.ml](./Ocaml/tableaux/src/tests.ml). Many of these are unit tests, written during programming to ensure that the functions in [`main.ml`](./Ocaml/tableaux/src/main.ml) were well written.
 
 To execute all the tests, run the command
 
