@@ -9,9 +9,9 @@ This solver was written in Summer 2022 by Anatole Leterrier in the context of an
 
 # Overview of the source code
 
-The main program is in the file [main.ml](./tableaux/src/main.ml); most importantly, it contains function `sat`, which is the main feature of our solver.
+The main program is in the file [main.ml](./Ocaml/tableaux/src/main.ml); most importantly, it contains function `sat`, which is the main feature of our solver.
 
-The tests are in the file [tests.ml](./tableaux/src/tests.ml).
+The tests are in the file [tests.ml](./Ocaml/tableaux/src/tests.ml).
 # Dependencies
 
 The program depends on the following software, which you need to install to be able to compile it on your own machine:
@@ -86,7 +86,7 @@ p &(Neg p | Neg X p) is satisfyable
 
 # Tests
 
-There are several tests in the file `./src/tests.ml`. Many of these are unit tests, written during programming to ensure that the functions in `main.ml` were well written.
+There are several tests in the file `./src/tests.ml`. Many of these are unit tests, written during programming to ensure that the functions in [main.ml](./Ocaml/tableaux/src/main.ml) were well written.
 
 To execute all the tests, run the command
 
