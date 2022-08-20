@@ -9,9 +9,9 @@ This solver was written in Summer 2022 by Anatole Leterrier in the context of an
 
 # Overview of the source code
 
-The main program is in the file [main.ml](./Ocaml/tableaux/src/main.ml); most importantly, it contains function `sat`, which is the main feature of our solver.
+The main program is in the file [`main.ml`](./Ocaml/tableaux/src/main.ml); most importantly, it contains function `sat`, which is the main feature of our solver.
 
-The tests are in the file [tests.ml](./Ocaml/tableaux/src/tests.ml).
+The tests are in the file [`tests.ml`](./Ocaml/tableaux/src/tests.ml).
 # Dependencies
 
 The program depends on the following software, which you need to install to be able to compile it on your own machine:
@@ -86,17 +86,17 @@ p &(Neg p | Neg X p) is satisfyable
 
 # Tests
 
-There are several tests in the file [tests.ml](./Ocaml/tableaux/src/tests.ml). Many of these are unit tests, written during programming to ensure that the functions in [`main.ml`](./Ocaml/tableaux/src/main.ml) were well written.
+There are several tests in the file [`tests.ml`](./Ocaml/tableaux/src/tests.ml). Many of these are unit tests, written during programming to ensure that the functions in [`main.ml`](./Ocaml/tableaux/src/main.ml) were well written.
 
 To execute all the tests, run the command
 
 `dune exec src/tests.exe`
 
-We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test, and is further described in [this report](./report.pdf) (Section 3.2 § Performance)
+We have created a sequence of formulas that exhibits the worst-case performance of the solver. It corresponds to the "exponential case" test, and is further described in [this report](./rapport.pdf) (Section 3.2 § Performance)
 
 # Known limitations
 
 In case an eventuality subformula (F or G) is present and the program claims satisfiability with the "LOOP" rule, it will tell the user to loop to find the actual, infinite model (eg. `G(Prop 'p')`). The current version does not yet specify exactly where to loop; this point is left to future work. If the program does not end with the "LOOP" rule, an infinite model is found by choosing any valuation for the remaining states. It also happens that a propositional variable is present as a subformula, but not specified in the model. This means that the choice of the truth value for this variable is not relevant to the satisfiability of the formula (eg. with `Or(Prop 'p',Prop 'q')` it will simply tell to set variable `p` to true, and not specify a truth value for `q`).
 
-The implementation can likely still be optimized for time and space performance, also see the discussion in the [report](./report.pdf) (Section 3.2 § Future improvements).
+The implementation can likely still be optimized for time and space performance, also see the discussion in the [report](./rapport.pdf) (Section 3.2 § Future improvements).
 
